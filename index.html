@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>لعبة النجوم العربية 🌟</title>
+    <meta name="description" content="لعبة النجوم العربية – مسابقات تفاعلية لـ 8 لاعبين" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="style.css" />
+</head>
+
+<body>
+
+    <!-- ═══════════════════════ LOBBY ═══════════════════════ -->
+    <div id="screen-lobby" class="screen active">
+        <div class="stars-bg"></div>
+        <div class="lobby-wrap">
+
+            <div class="logo-box">
+                <div class="logo-star">⭐</div>
+                <h1 class="logo-title">لعبة النجوم العربية</h1>
+                <p class="logo-sub">برنامج المسابقات التفاعلي</p>
+            </div>
+
+            <div class="card">
+                <h2 class="section-title">🎮 أدخل أسماء اللاعبين الثمانية</h2>
+                <div class="players-grid" id="players-grid"></div>
+
+                <div class="divider"></div>
+
+                <h2 class="section-title">🗳️ صوّت: كم نقطة للفوز؟</h2>
+                <div class="vote-row">
+                    <button class="vote-btn active" data-score="10" onclick="castVote(this)">10 نقاط</button>
+                    <button class="vote-btn" data-score="15" onclick="castVote(this)">15 نقطة</button>
+                    <button class="vote-btn" data-score="20" onclick="castVote(this)">20 نقطة</button>
+                </div>
+                <p class="vote-info" id="vote-info">📊 الهدف الحالي: <strong>10</strong> نقاط</p>
+
+                <button class="btn-start" onclick="startGame()">🚀 ابدأ اللعبة!</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ═══════════════════════ GAME ═══════════════════════ -->
+    <div id="screen-game" class="screen">
+        <div class="stars-bg"></div>
+
+        <header class="topbar">
+            <div class="topbar-left">
+                <span class="round-pill" id="round-pill">الجولة ١</span>
+                <span class="type-pill" id="type-pill">🎯</span>
+            </div>
+            <div class="topbar-center">⭐ النجوم العربية</div>
+            <div class="topbar-right">الهدف: <strong id="target-disp">10</strong> نقطة</div>
+        </header>
+
+        <div class="scoreboard" id="scoreboard"></div>
+
+        <div class="game-body">
+
+            <!-- HOST -->
+            <div class="host-area">
+                <div class="host-avatar">🤖</div>
+                <div class="host-bubble" id="host-bubble">أهلاً وسهلاً في لعبة النجوم العربية!</div>
+            </div>
+
+            <!-- ── REVERSED WORDS ── -->
+            <div class="game-panel hidden" id="panel-reversed">
+                <h3 class="panel-title">🔤 الكلمات المعكوسة</h3>
+                <div class="rev-letters-wrap">
+                    <div class="rev-letters" id="rev-letters"></div>
+                </div>
+                <p class="panel-hint">اقرأ الحروف من اليمين لليسار!</p>
+                <button class="btn-repeat hidden" id="btn-repeat" onclick="replayAnimation()">🔁 كرر</button>
+                <div class="reveal-box hidden" id="rev-reveal">الإجابة: <strong id="rev-answer"></strong></div>
+            </div>
+
+            <!-- ── FLAG ── -->
+            <div class="game-panel hidden" id="panel-flag">
+                <h3 class="panel-title">🚩 خمّن العلم</h3>
+                <div class="flag-wrap">
+                    <img id="flag-img" src="" alt="علم" class="flag-img"
+                        onerror="this.src='https://flagcdn.com/w320/un.png'" />
+                    <div class="flag-shine"></div>
+                </div>
+                <p class="panel-hint">ما هذا العلم؟</p>
+                <div class="reveal-box hidden" id="flag-reveal">الإجابة: <strong id="flag-answer"></strong></div>
+            </div>
+
+            <!-- ── TRIVIA ── -->
+            <div class="game-panel hidden" id="panel-trivia">
+                <h3 class="panel-title">🧠 سؤال وجواب</h3>
+                <p class="trivia-q" id="trivia-q">جاهز؟</p>
+                <div class="reveal-box hidden" id="trivia-reveal">الإجابة: <strong id="trivia-answer"></strong></div>
+            </div>
+
+            <!-- ── DRAWING CANVAS ── -->
+            <div class="game-panel hidden" id="panel-drawing">
+                <div class="drawing-header">
+                    <div class="drawer-info">
+                        <span class="drawer-label">يرسم الآن:</span>
+                        <span class="drawer-name" id="drawer-name">—</span>
+                    </div>
+                    <div class="draw-word-box">
+                        <span>ارسم:</span>
+                        <strong id="draw-word-label">—</strong>
+                    </div>
+                    <div class="draw-timer-wrap">
+                        <svg class="draw-ring" viewBox="0 0 80 80">
+                            <circle class="ring-track" cx="40" cy="40" r="34" />
+                            <circle class="ring-prog" cx="40" cy="40" r="34" id="draw-ring-circle" />
+                        </svg>
+                        <span class="draw-timer-num" id="draw-timer-num">30</span>
+                    </div>
+                </div>
+
+                <div class="canvas-area">
+                    <div class="canvas-toolbar">
+                        <div class="tool-group color-palette" id="color-palette">
+                            <button class="color-swatch active" data-color="#1a1a1a"
+                                style="background:#1a1a1a"></button>
+                            <button class="color-swatch" data-color="#ffffff"
+                                style="background:#ffffff;border-color:#888"></button>
+                            <button class="color-swatch" data-color="#ef4444" style="background:#ef4444"></button>
+                            <button class="color-swatch" data-color="#f97316" style="background:#f97316"></button>
+                            <button class="color-swatch" data-color="#eab308" style="background:#eab308"></button>
+                            <button class="color-swatch" data-color="#22c55e" style="background:#22c55e"></button>
+                            <button class="color-swatch" data-color="#06b6d4" style="background:#06b6d4"></button>
+                            <button class="color-swatch" data-color="#3b82f6" style="background:#3b82f6"></button>
+                            <button class="color-swatch" data-color="#8b5cf6" style="background:#8b5cf6"></button>
+                            <button class="color-swatch" data-color="#ec4899" style="background:#ec4899"></button>
+                            <button class="color-swatch" data-color="#92400e" style="background:#92400e"></button>
+                            <button class="color-swatch" data-color="#6b7280" style="background:#6b7280"></button>
+                        </div>
+                        <div class="tool-group size-group">
+                            <button class="size-btn" data-size="3" onclick="setBrushSize(3)"><span class="size-dot"
+                                    style="width:4px;height:4px"></span></button>
+                            <button class="size-btn active" data-size="6" onclick="setBrushSize(6)"><span
+                                    class="size-dot" style="width:8px;height:8px"></span></button>
+                            <button class="size-btn" data-size="14" onclick="setBrushSize(14)"><span class="size-dot"
+                                    style="width:14px;height:14px"></span></button>
+                            <button class="size-btn" data-size="24" onclick="setBrushSize(24)"><span class="size-dot"
+                                    style="width:20px;height:20px"></span></button>
+                        </div>
+                        <div class="tool-group">
+                            <button class="tool-btn" id="eraser-btn" onclick="toggleEraser()" title="ممحاة">🧹</button>
+                            <button class="tool-btn" onclick="clearCanvas()" title="مسح الكل">🗑️</button>
+                        </div>
+                    </div>
+                    <canvas id="draw-canvas" width="800" height="460"></canvas>
+                </div>
+                <button class="btn-submit-draw" onclick="submitDrawing()">✅ انتهيت من الرسم</button>
+            </div>
+
+            <!-- ── VOTING GALLERY ── -->
+            <div class="game-panel hidden" id="panel-voting">
+                <h3 class="panel-title">🗳️ صوّت لأفضل رسمة!</h3>
+                <div class="voter-banner" id="voter-banner">
+                    <span>دور التصويت:</span>
+                    <strong id="voter-name">—</strong>
+                </div>
+                <div class="drawings-gallery" id="drawings-gallery"></div>
+                <div class="vote-progress" id="vote-progress">التصويت 1 من 8</div>
+            </div>
+
+            <!-- ── ANSWER INPUT (shown after buzzing) ── -->
+            <div class="answer-section hidden" id="answer-section">
+                <div class="answer-inner">
+                    <div class="answering-player" id="answering-player">🔔 اللاعب يجاوب...</div>
+                    <div class="answer-timer-wrap">
+                        <svg class="answer-ring" viewBox="0 0 100 100">
+                            <circle class="ring-track" cx="50" cy="50" r="44" />
+                            <circle class="ring-prog" cx="50" cy="50" r="44" id="answer-ring-circle" />
+                        </svg>
+                        <span class="answer-timer-num" id="answer-timer-num">5</span>
+                    </div>
+                    <input type="text" id="answer-input" class="answer-input" placeholder="اكتب الإجابة هنا..."
+                        autocomplete="off" onkeydown="if(event.key==='Enter')submitAnswer()" />
+                    <button class="btn-submit-answer" onclick="submitAnswer()">📨 إرسال</button>
+                </div>
+            </div>
+
+            <!-- ── BUZZERS ── -->
+            <div class="buzzers-section hidden" id="buzzers-section">
+                <div class="buzzers-label">🔔 من يضغط أولاً؟</div>
+                <div class="buzzers-grid" id="buzzers-grid"></div>
+            </div>
+
+            <!-- ── CONTROLS ── -->
+            <div class="controls-bar" id="controls-bar">
+                <button class="btn-reveal" id="btn-reveal" onclick="revealAnswer()">👁️ كشف الإجابة</button>
+                <button class="btn-next hidden" id="btn-next" onclick="nextRound()">➡️ جولة جديدة</button>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- ═══════════════════════ WINNER ═══════════════════════ -->
+    <div id="screen-winner" class="screen">
+        <div class="stars-bg"></div>
+        <div id="confetti-wrap"></div>
+        <div class="winner-box">
+            <div class="win-trophy">🏆</div>
+            <h1 class="win-title">الفائز!</h1>
+            <div class="win-name" id="win-name">—</div>
+            <div class="win-score" id="win-score">— نقطة</div>
+            <div class="win-leaderboard" id="win-leaderboard"></div>
+            <button class="btn-start" onclick="restartGame()">🔄 العب مجدداً</button>
+        </div>
+    </div>
+
+    <!-- OVERLAYS -->
+    <div class="point-popup" id="point-popup"></div>
+    <div class="countdown-overlay hidden" id="countdown-overlay">
+        <div class="countdown-num" id="countdown-num">3</div>
+    </div>
+
+    <!-- AI RESULT OVERLAY -->
+    <div class="ai-result-overlay hidden" id="ai-result-overlay">
+        <div class="ai-result-box" id="ai-result-box">
+            <div class="ai-result-icon" id="ai-result-icon">✅</div>
+            <div class="ai-result-text" id="ai-result-text">إجابة صحيحة!</div>
+        </div>
+    </div>
+
+    <script src="data.js"></script>
+    <script src="game.js"></script>
+</body>
+
+</html>
