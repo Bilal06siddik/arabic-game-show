@@ -431,7 +431,7 @@ function revealAnswer() {
 // ══════════════════════════════════════════════════════
 function startDrawingChallenge() {
     const item = pickUnused(DRAWING, usedDrawing);
-    drawingWord = typeof item === 'string' ? item : item;
+    drawingWord = item;
     currentAnswer = drawingWord;
     drawingData = Array(players.length).fill(null);
     drawingVotes = Array(players.length).fill(0);
@@ -439,6 +439,10 @@ function startDrawingChallenge() {
     hide('buzzers-section');
     hide('btn-reveal');
     hide('btn-next');
+    // If solo player, auto-award after drawing (no point to vote)
+    if (players.length === 1) {
+        setHost(`🎨 ارسم: "${drawingWord}" في 30 ثانية!`);
+    }
     showDrawerTurn(currentDrawer);
 }
 
@@ -476,6 +480,15 @@ function submitDrawing() {
     if (currentDrawer < players.length) {
         setHost(`👏 رسم ${players[currentDrawer - 1].name}! الآن دور ${players[currentDrawer].name}`);
         setTimeout(() => showDrawerTurn(currentDrawer), 800);
+    } else if (players.length === 1) {
+        // Solo mode — no voting, just give a point and move on
+        players[0].score += 1;
+        buildScoreboard();
+        setHost('🎨 أحسنت! +1 نقطة على الرسمة الحلوة 😄');
+        hide('panel-drawing');
+        if (checkWin()) return;
+        show('btn-next');
+        hide('btn-reveal');
     } else {
         // All drawn — go to voting
         setHost('🗳️ الكل رسم! حان وقت التصويت لأفضل رسمة!');
