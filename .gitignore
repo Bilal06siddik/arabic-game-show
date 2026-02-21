@@ -27,3 +27,6 @@ coverage/
 # Logs
 npm-debug.log*
 *.log
+
+# Local runtime state
+.run/

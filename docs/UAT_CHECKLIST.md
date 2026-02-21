@@ -74,10 +74,10 @@
 - Disconnect a non-host player and reconnect via same browser session; verify player seat restored.
 - Disconnect current host; verify auto-transfer to next connected player.
 
-## E) Deployment Validation
+## E) Friend Host + Tunnel Validation
 
-- Frontend served from Azure Static Web Apps.
-- Backend served from Azure Container Apps.
-- `/health` endpoint returns OK.
-- Room creation/join works through public URLs.
+- Host runs `npm run tunnel:start`.
+- Tunnel URL opens the landing page from an external network.
+- `/health` endpoint returns OK through tunnel URL.
+- Room creation/join works through the shared tunnel URL.
 - Socket events continue across real internet network.

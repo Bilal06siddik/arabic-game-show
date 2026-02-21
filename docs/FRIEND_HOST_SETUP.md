@@ -2,77 +2,81 @@
 
 This setup is for private play where one friend hosts the game server.
 
-Date context: prepared on February 20, 2026.
+Date context: updated on February 21, 2026.
 
 ## 1) Host Machine Requirements
 
 - Windows/macOS/Linux machine that stays online during session.
 - Node.js 22+ and npm 11+.
-- Stable internet upload (or same LAN/Wi-Fi for local play).
+- Stable internet upload.
 
-## 2) First-Time Setup (Host)
+## 2) First-Time Setup (Host Only)
 
 From project root:
 
 ```bash
 npm install
-npm run host:prod
+npm run tunnel:start
 ```
 
-Server starts on:
+What this does:
 
-- `http://<HOST_IP>:4000`
+- Starts the game server on `http://localhost:4000` automatically if not running
+- Installs `cloudflared` automatically if missing (Windows via `winget`)
+- Starts a Cloudflare quick tunnel
+- Prints a public `https://...trycloudflare.com` URL to share immediately
+- Runs host/tunnel processes in background without opening extra console windows
 
-The backend now serves the frontend too, so friends only need one URL.
+The backend serves the frontend too, so friends only need one URL.
 
 ## 3) Fast Restart (Host)
 
-After first build:
+Usually you only need:
 
 ```bash
-npm run host
+npm run tunnel:start
 ```
 
-## 4) Same Wi-Fi / LAN Play (Easiest)
+Optional interactive menu:
 
-1. Host finds local IP (example `192.168.1.34`).
-2. Friends on same network open:
+```bash
+npm run tunnel
+```
+
+This opens a terminal menu with `Start`, `Stop`, and `Status`.
+
+Optional manual server start:
+
+```bash
+npm run host:prod
+```
+
+## 4) Share With Friends
+
+Send the printed tunnel URL to friends, for example:
 
 ```text
-http://192.168.1.34:4000
+https://something.trycloudflare.com
 ```
 
-3. Create room and share room code.
+Then:
 
-## 5) Internet Play (Different Networks)
+- Host creates a room.
+- Friends open the link and join with the room code.
 
-Choose one method:
+## 5) Stop Hosting
 
-## Option A: Port Forwarding (direct)
-
-- Forward router external port `4000` -> host machine `4000`.
-- Open firewall for inbound TCP `4000`.
-- Friends join via your public IP/domain:
-
-```text
-http://<PUBLIC_IP_OR_DOMAIN>:4000
+```powershell
+npm run tunnel:stop
 ```
 
-## Option B: Tailscale (recommended private access)
+This also stops the host process if it was auto-started by `npm run tunnel:start`.
 
-- All players install Tailscale and join same tailnet.
-- Host shares Tailscale IP (100.x.x.x) or MagicDNS name.
-- Friends open:
+You can also check status any time:
 
-```text
-http://<TAILSCALE_HOST>:4000
+```powershell
+npm run tunnel:status
 ```
-
-This avoids exposing your home router publicly.
-
-## Option C: Tunnel service (quick temporary)
-
-Use tools like Cloudflare Tunnel / ngrok / similar to expose `localhost:4000`.
 
 ## 6) Host Runtime Tips
 
@@ -82,24 +86,18 @@ Use tools like Cloudflare Tunnel / ngrok / similar to expose `localhost:4000`.
 
 ## 7) Common Problems
 
-## Friends cannot open host URL
+## `npm run tunnel:start` fails to auto-start local server
 
-- Check host machine firewall.
-- Confirm server is running on port `4000`.
-- Confirm correct IP and network.
-- If internet play, re-check router port forward or tunnel status.
+- Run `npm run host:prod` once and confirm build passes.
+- Check logs in `.run/host.out.log` and `.run/host.err.log`.
+- Check `http://localhost:4000/health` in browser.
 
-## Socket disconnects
+## Friends cannot open tunnel URL
 
-- Network instability on host side.
-- Host machine sleeping.
-- ISP/router resets.
+- Keep the host online and awake.
+- Restart tunnel with `npm run tunnel:stop` then `npm run tunnel:start`.
 
 ## 8) Security Note
 
-If you use direct port forwarding, anyone with your public URL can try connecting.
-For private game nights, prefer Tailscale or a password-protected tunnel whenever possible.
-
-## 9) Optional Future Upgrade
-
-When you want always-on availability, use cloud hosting later (Azure guide remains in `docs/AZURE_SETUP.md`).
+Anyone with your tunnel URL can open the site while tunnel is active.
+Only share the link with your invited players and stop the tunnel after the session.

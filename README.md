@@ -20,25 +20,25 @@ npm run dev
 
 ## Friend Hosting (One of You Hosts)
 
-The easiest flow for your use case:
+Simple flow:
 
-1. Host machine runs one Node server.
-2. That server hosts both frontend + API + Socket.IO on one URL.
-3. Friends open that host URL and join rooms with room code.
+1. Host machine runs Cloudflare quick tunnel (`npm run tunnel:start`).
+2. Script auto-starts the game server if needed.
+3. Friends open the tunnel URL and join using room code.
 
 ### Host commands
 
 ```bash
 npm install
-npm run host:prod
+npm run tunnel:start
 ```
 
-This builds everything then starts server on port `4000`.
+This installs/checks `cloudflared`, auto-starts server on port `4000` if needed, then prints a public share URL.
 
-After first build, for faster restarts:
+Manual server start is still available:
 
 ```bash
-npm run host
+npm run host:prod
 ```
 
 Detailed guide: `docs/FRIEND_HOST_SETUP.md`.
@@ -51,6 +51,10 @@ npm run dev:web        # web only
 npm run dev:server     # server only
 npm run host:prod      # build + start single-host mode
 npm run host           # start server (expects built artifacts)
+npm run tunnel         # interactive tunnel menu (start/stop/status)
+npm run tunnel:start   # install/check cloudflared + auto-start host + print share URL
+npm run tunnel:stop    # stop cloudflared (+ managed host if started by tunnel script)
+npm run tunnel:status  # show current tunnel/host status + URL
 npm run build          # build all workspaces
 npm run test           # server tests
 npm run lint           # TS type checks
@@ -63,9 +67,3 @@ npm run lint           # TS type checks
 - `POST /api/rooms/:code/join`
 - `GET /api/rooms/:code/meta`
 - `POST /api/rooms/:code/reconnect`
-
-## Deployment (Optional Later)
-
-Azure guide is kept for future use:
-
-- `docs/AZURE_SETUP.md`
