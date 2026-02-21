@@ -49,6 +49,44 @@ function Test-ServerHealth {
   }
 }
 
+function Test-HostPageReady {
+  param(
+    [string]$Url,
+    [int]$TimeoutSec = 4
+  )
+
+  try {
+    $response = Invoke-WebRequest -Uri $Url -TimeoutSec $TimeoutSec -UseBasicParsing
+    if ($response.StatusCode -lt 200 -or $response.StatusCode -ge 400) {
+      return $false
+    }
+
+    $contentType = [string]$response.Headers['Content-Type']
+    if ($contentType -match 'text/html') {
+      return $true
+    }
+
+    $content = [string]$response.Content
+    return $content -match '<!doctype html' -or $content -match '<html'
+  }
+  catch {
+    return $false
+  }
+}
+
+function Get-ListeningProcessIds {
+  param([int]$Port)
+
+  try {
+    $connections = Get-NetTCPConnection -LocalPort $Port -State Listen -ErrorAction Stop |
+      Select-Object -ExpandProperty OwningProcess -Unique
+    return @($connections | Where-Object { $_ -and ($_ -gt 0) })
+  }
+  catch {
+    return @()
+  }
+}
+
 function Resolve-HostStartCommand {
   param([string]$RepoRoot)
 
@@ -84,6 +122,7 @@ $hostErrLog = Join-Path $runDir 'host.err.log'
 $hostPidFile = Join-Path $runDir 'host.pid'
 $hostManagedFile = Join-Path $runDir 'host.managed'
 $healthUrl = "http://$LocalHost`:$Port/health"
+$rootUrl = "http://$LocalHost`:$Port/"
 $hostStartedByThisRun = $false
 $hostProcessId = ''
 $windowStyle = if ($ShowProcessWindows) { 'Normal' } else { 'Hidden' }
@@ -108,16 +147,27 @@ if (-not $cloudflaredPath) {
 Write-Step "Using cloudflared at: $cloudflaredPath"
 
 if (-not $SkipHealthCheck) {
-  if (Test-ServerHealth -Url $healthUrl) {
-    Write-Step "Local game server is reachable at http://$LocalHost`:$Port"
+  $serverHealthy = Test-ServerHealth -Url $healthUrl
+  $hostPageReady = $false
+  if ($serverHealthy) {
+    $hostPageReady = Test-HostPageReady -Url $rootUrl
+  }
+
+  if ($serverHealthy -and $hostPageReady) {
+    Write-Step "Local game host is reachable at http://$LocalHost`:$Port"
   }
   else {
     if ($NoAutoStartServer) {
-      throw "Local server is not reachable at $healthUrl and auto-start is disabled."
+      throw "Local host is not fully reachable (`/health`: $serverHealthy, `/`: $hostPageReady) and auto-start is disabled."
     }
 
     $hostStartCommand = Resolve-HostStartCommand -RepoRoot $repoRoot
-    Write-Step "Local server not detected. Starting it automatically with '$hostStartCommand'..."
+    if ($serverHealthy -and -not $hostPageReady) {
+      Write-Step "Detected a server on port $Port, but root page is not available. Restarting host with '$hostStartCommand'..."
+    }
+    else {
+      Write-Step "Local server not detected. Starting it automatically with '$hostStartCommand'..."
+    }
 
     if (Test-Path $hostPidFile) {
       $oldHostPid = (Get-Content $hostPidFile -Raw).Trim()
@@ -127,6 +177,18 @@ if (-not $SkipHealthCheck) {
           Write-Step "Stopping previous managed host process PID $oldHostPid"
           Stop-Process -Id $oldHostPid -Force -ErrorAction SilentlyContinue
           Start-Sleep -Milliseconds 700
+        }
+      }
+    }
+
+    if ($serverHealthy -and -not $hostPageReady) {
+      $portPids = Get-ListeningProcessIds -Port $Port
+      foreach ($portPid in $portPids) {
+        $portProc = Get-Process -Id $portPid -ErrorAction SilentlyContinue
+        if ($portProc) {
+          Write-Step "Stopping process PID $portPid listening on port $Port"
+          Stop-Process -Id $portPid -Force -ErrorAction SilentlyContinue
+          Start-Sleep -Milliseconds 500
         }
       }
     }
@@ -148,11 +210,11 @@ if (-not $SkipHealthCheck) {
     Set-Content -Path $hostManagedFile -Value '1'
     Write-Step "Started host process (PID $hostProcessId). Waiting for readiness..."
 
-    $hostDeadline = (Get-Date).AddSeconds(150)
+    $hostDeadline = (Get-Date).AddSeconds(180)
     $serverReady = $false
 
     while ((Get-Date) -lt $hostDeadline) {
-      if (Test-ServerHealth -Url $healthUrl -TimeoutSec 3) {
+      if ((Test-ServerHealth -Url $healthUrl -TimeoutSec 3) -and (Test-HostPageReady -Url $rootUrl -TimeoutSec 3)) {
         $serverReady = $true
         break
       }
@@ -167,10 +229,10 @@ if (-not $SkipHealthCheck) {
     if (-not $serverReady) {
       $hostOutTail = Get-LogTail -Path $hostOutLog
       $hostErrTail = Get-LogTail -Path $hostErrLog
-      throw "Failed to auto-start local server at $healthUrl.`nCommand: $hostStartCommand`nLogs:`n$hostOutLog`n$hostErrLog`n--- HOST OUT ---`n$hostOutTail`n--- HOST ERR ---`n$hostErrTail"
+      throw "Failed to auto-start local host at http://$LocalHost`:$Port (`/health` and `/` were not both ready).`nCommand: $hostStartCommand`nLogs:`n$hostOutLog`n$hostErrLog`n--- HOST OUT ---`n$hostOutTail`n--- HOST ERR ---`n$hostErrTail"
     }
 
-    Write-Step "Local game server is reachable at http://$LocalHost`:$Port"
+    Write-Step "Local game host is reachable at http://$LocalHost`:$Port"
   }
 }
 
