@@ -8,3 +8,22 @@ Thumbs.db
 # Editor
 .vscode/
 *.swp
+
+# Node
+node_modules/
+
+# Build artifacts
+dist/
+coverage/
+.vite/
+.vite-temp/
+*.tsbuildinfo
+
+# Env
+.env
+.env.*
+!.env.example
+
+# Logs
+npm-debug.log*
+*.log

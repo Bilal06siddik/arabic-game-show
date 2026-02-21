@@ -1,0 +1,14 @@
+[
+  { "id": "flag-sa", "countryCode": "sa", "countryName": "المملكة العربية السعودية", "answer": "المملكة العربية السعودية", "alt": ["السعودية", "سعوديه"] },
+  { "id": "flag-eg", "countryCode": "eg", "countryName": "مصر", "answer": "مصر", "alt": ["Egypt"] },
+  { "id": "flag-us", "countryCode": "us", "countryName": "الولايات المتحدة الأمريكية", "answer": "الولايات المتحدة الأمريكية", "alt": ["امريكا", "USA"] },
+  { "id": "flag-gb", "countryCode": "gb", "countryName": "المملكة المتحدة", "answer": "المملكة المتحدة", "alt": ["بريطانيا", "انجلترا"] },
+  { "id": "flag-fr", "countryCode": "fr", "countryName": "فرنسا", "answer": "فرنسا", "alt": [] },
+  { "id": "flag-de", "countryCode": "de", "countryName": "ألمانيا", "answer": "ألمانيا", "alt": ["المانيا"] },
+  { "id": "flag-jp", "countryCode": "jp", "countryName": "اليابان", "answer": "اليابان", "alt": ["يابان"] },
+  { "id": "flag-ae", "countryCode": "ae", "countryName": "الإمارات", "answer": "الإمارات العربية المتحدة", "alt": ["الإمارات", "امارات"] },
+  { "id": "flag-jo", "countryCode": "jo", "countryName": "الأردن", "answer": "الأردن", "alt": ["الاردن"] },
+  { "id": "flag-ma", "countryCode": "ma", "countryName": "المغرب", "answer": "المغرب", "alt": [] },
+  { "id": "flag-tr", "countryCode": "tr", "countryName": "تركيا", "answer": "تركيا", "alt": ["تركيه"] },
+  { "id": "flag-ca", "countryCode": "ca", "countryName": "كندا", "answer": "كندا", "alt": [] }
+]

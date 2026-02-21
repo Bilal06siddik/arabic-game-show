@@ -1,0 +1,22 @@
+{
+  "name": "arabic-game-show-platform",
+  "private": true,
+  "version": "0.1.0",
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "scripts": {
+    "prepare:shared": "npm run build --workspace @ags/shared",
+    "dev:web": "npm run prepare:shared && npm run dev --workspace @ags/web",
+    "dev:server": "npm run prepare:shared && npm run dev --workspace @ags/server",
+    "dev": "npm run prepare:shared && concurrently -n web,server -c cyan,green \"npm run dev --workspace @ags/web\" \"npm run dev --workspace @ags/server\"",
+    "build": "npm run build --workspace @ags/shared && npm run build --workspace @ags/server && npm run build --workspace @ags/web",
+    "test": "npm run test --workspace @ags/server",
+    "lint": "npm run lint --workspace @ags/web && npm run lint --workspace @ags/server"
+  },
+  "devDependencies": {
+    "concurrently": "^9.0.1",
+    "typescript": "^5.7.2"
+  }
+}

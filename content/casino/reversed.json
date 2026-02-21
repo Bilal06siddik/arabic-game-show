@@ -1,0 +1,17 @@
+[
+  { "id": "rev-1", "reversed": "بتك", "answer": "كتب", "alt": [] },
+  { "id": "rev-2", "reversed": "سرف", "answer": "فرس", "alt": [] },
+  { "id": "rev-3", "reversed": "رهن", "answer": "نهر", "alt": [] },
+  { "id": "rev-4", "reversed": "مجن", "answer": "نجم", "alt": [] },
+  { "id": "rev-5", "reversed": "رمق", "answer": "قمر", "alt": [] },
+  { "id": "rev-6", "reversed": "بلق", "answer": "قلب", "alt": [] },
+  { "id": "rev-7", "reversed": "دلو", "answer": "ولد", "alt": [] },
+  { "id": "rev-8", "reversed": "حبص", "answer": "صبح", "alt": [] },
+  { "id": "rev-9", "reversed": "سمش", "answer": "شمس", "alt": [] },
+  { "id": "rev-10", "reversed": "سوق", "answer": "قوس", "alt": [] },
+  { "id": "rev-11", "reversed": "دسأ", "answer": "أسد", "alt": ["اسد"] },
+  { "id": "rev-12", "reversed": "برع", "answer": "عرب", "alt": [] },
+  { "id": "rev-13", "reversed": "فيس", "answer": "سيف", "alt": [] },
+  { "id": "rev-14", "reversed": "بهذ", "answer": "ذهب", "alt": [] },
+  { "id": "rev-15", "reversed": "لبج", "answer": "جبل", "alt": [] }
+]
