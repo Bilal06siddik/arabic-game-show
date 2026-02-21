@@ -68,6 +68,7 @@ function Show-Status {
   $shareUrl = if (Test-Path $urlFile) { (Get-Content $urlFile -Raw).Trim() } else { '' }
   $healthUrl = "http://$LocalHost`:$Port/health"
   $localServerReachable = Test-ServerHealth -Url $healthUrl
+  $hostDetectedRunning = $hostState.Running -or $localServerReachable
 
   Write-Host ''
   Write-Host 'Current tunnel status:' -ForegroundColor Cyan
@@ -79,12 +80,15 @@ function Show-Status {
     Write-Host "Share URL: $shareUrl"
   }
   Write-Host ''
-  Write-Host "Host running: $($hostState.Running)"
+  Write-Host "Host running: $hostDetectedRunning"
   if ($hostState.Pid) {
-    Write-Host "Host PID: $($hostState.Pid)"
+    Write-Host "Tracked host PID: $($hostState.Pid)"
   }
   Write-Host "Host managed by tunnel script: $isHostManaged"
   Write-Host "Local server reachable: $localServerReachable ($healthUrl)"
+  if ($localServerReachable -and -not $hostState.Running -and -not $isHostManaged) {
+    Write-Host 'Note: server appears to be running outside this script (no managed host PID).' -ForegroundColor Yellow
+  }
   Write-Host ''
 }
 
