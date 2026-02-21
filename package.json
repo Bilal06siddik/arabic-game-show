@@ -11,6 +11,9 @@
     "dev:web": "npm run prepare:shared && npm run dev --workspace @ags/web",
     "dev:server": "npm run prepare:shared && npm run dev --workspace @ags/server",
     "dev": "npm run prepare:shared && concurrently -n web,server -c cyan,green \"npm run dev --workspace @ags/web\" \"npm run dev --workspace @ags/server\"",
+    "host:build": "npm run build",
+    "host": "npm run start --workspace @ags/server",
+    "host:prod": "npm run host:build && npm run host",
     "build": "npm run build --workspace @ags/shared && npm run build --workspace @ags/server && npm run build --workspace @ags/web",
     "test": "npm run test --workspace @ags/server",
     "lint": "npm run lint --workspace @ags/web && npm run lint --workspace @ags/server"

@@ -1,4 +1,6 @@
 import http from 'node:http';
+import fs from 'node:fs';
+import path from 'node:path';
 import cors from 'cors';
 import express, { type NextFunction, type Request, type Response } from 'express';
 import {
@@ -59,6 +61,23 @@ function createSocketErrorPayload(error: unknown) {
     code: toErrorCode(error),
     message: error instanceof Error ? error.message : 'Unknown error',
   };
+}
+
+function resolveWebDistDir(): string | undefined {
+  const candidates = [
+    path.resolve(process.cwd(), 'apps', 'web', 'dist'),
+    path.resolve(process.cwd(), '..', 'web', 'dist'),
+    path.resolve(process.cwd(), 'dist'),
+  ];
+
+  for (const candidate of candidates) {
+    const indexPath = path.join(candidate, 'index.html');
+    if (fs.existsSync(indexPath)) {
+      return candidate;
+    }
+  }
+
+  return undefined;
 }
 
 export function createAppRuntime(): AppRuntime {
@@ -273,6 +292,32 @@ export function createAppRuntime(): AppRuntime {
       next(error);
     }
   });
+
+  const webDistDir = resolveWebDistDir();
+  if (webDistDir) {
+    app.use(express.static(webDistDir));
+    app.get('*', (req, res, next) => {
+      if (
+        req.path.startsWith('/api') ||
+        req.path.startsWith('/socket.io') ||
+        req.path === '/health'
+      ) {
+        next();
+        return;
+      }
+      res.sendFile(path.join(webDistDir, 'index.html'));
+    });
+
+    logger.info('web_static_enabled', { webDistDir });
+  } else {
+    logger.warn('web_static_not_found', {
+      checked: [
+        path.resolve(process.cwd(), 'apps', 'web', 'dist'),
+        path.resolve(process.cwd(), '..', 'web', 'dist'),
+        path.resolve(process.cwd(), 'dist'),
+      ],
+    });
+  }
 
   app.use((error: unknown, _req: Request, res: Response, _next: NextFunction) => {
     const errorCode = toErrorCode(error);
