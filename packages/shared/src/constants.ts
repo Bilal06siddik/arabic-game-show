@@ -22,3 +22,14 @@ export const ERROR_CODES = {
   alreadyStarted: 'ALREADY_STARTED',
   notStarted: 'NOT_STARTED',
 } as const;
+
+export const PIECE_COLORS = [
+  'red',
+  'blue',
+  'green',
+  'yellow',
+  'purple',
+  'orange',
+  'teal',
+  'pink',
+] as const;

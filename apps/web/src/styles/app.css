@@ -454,6 +454,182 @@ select {
   gap: 8px;
 }
 
+.bank3d-root {
+  display: grid;
+  gap: 14px;
+}
+
+.bank3d-canvas-panel {
+  position: relative;
+  border-radius: 18px;
+  border: 1px solid #c6d9ec;
+  overflow: hidden;
+  min-height: 680px;
+  background:
+    radial-gradient(circle at 20% -30%, rgba(186, 226, 255, 0.5) 0%, transparent 42%),
+    radial-gradient(circle at 100% 120%, rgba(208, 236, 255, 0.45) 0%, transparent 40%),
+    #dbeaf8;
+}
+
+.bank3d-canvas-panel canvas {
+  width: 100% !important;
+  height: 100% !important;
+}
+
+.bank3d-hud {
+  position: absolute;
+  z-index: 4;
+  display: flex;
+  gap: 8px;
+}
+
+.bank3d-hud-top {
+  top: 10px;
+  left: 10px;
+  right: 10px;
+  flex-wrap: wrap;
+}
+
+.bank3d-hud-left {
+  left: 10px;
+  top: 116px;
+  width: min(320px, calc(100% - 20px));
+  flex-direction: column;
+}
+
+.bank3d-hud-right {
+  right: 10px;
+  top: 116px;
+  width: min(320px, calc(100% - 20px));
+  flex-direction: column;
+}
+
+.bank3d-pill {
+  background: rgba(255, 255, 255, 0.88);
+  border: 1px solid rgba(167, 193, 221, 0.95);
+  border-radius: 999px;
+  padding: 6px 12px;
+  font-size: 0.86rem;
+  box-shadow: 0 6px 16px rgba(20, 50, 82, 0.12);
+}
+
+.bank3d-pill.danger {
+  border-color: rgba(197, 59, 47, 0.6);
+  color: var(--danger);
+  font-weight: 700;
+}
+
+.bank3d-card {
+  background: rgba(255, 255, 255, 0.9);
+  border: 1px solid rgba(167, 193, 221, 0.95);
+  border-radius: 14px;
+  padding: 12px;
+  box-shadow: 0 8px 20px rgba(20, 50, 82, 0.12);
+  backdrop-filter: blur(6px);
+}
+
+.bank3d-card h3 {
+  margin: 0 0 10px;
+  font-size: 1rem;
+}
+
+.bank3d-card label {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-bottom: 10px;
+  font-size: 0.9rem;
+}
+
+.bank3d-card input,
+.bank3d-card select {
+  border: 1px solid #c7d9ea;
+  border-radius: 10px;
+  padding: 8px 10px;
+  background: rgba(255, 255, 255, 0.95);
+}
+
+.bank3d-inline-box {
+  margin-top: 10px;
+  padding: 10px;
+  border: 1px solid #d3e1ee;
+  border-radius: 12px;
+  background: rgba(248, 252, 255, 0.94);
+}
+
+.bank3d-player-list {
+  display: grid;
+  gap: 8px;
+  max-height: 290px;
+  overflow-y: auto;
+  padding-right: 2px;
+}
+
+.bank3d-bottom-row {
+  display: grid;
+  gap: 10px;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+}
+
+.bank3d-events {
+  max-height: 260px;
+  overflow: auto;
+}
+
+.bank3d-events summary,
+.bank3d-host-drawer summary {
+  cursor: pointer;
+  font-weight: 700;
+  margin-bottom: 10px;
+}
+
+.bank3d-host-drawer {
+  max-height: 260px;
+  overflow: auto;
+}
+
+.bank3d-tile-label {
+  min-width: 74px;
+  max-width: 140px;
+  padding: 4px 6px;
+  border-radius: 8px;
+  background: rgba(19, 36, 58, 0.76);
+  color: #fff;
+  display: grid;
+  gap: 2px;
+  text-align: center;
+  font-size: 0.56rem;
+  line-height: 1.2;
+}
+
+.bank3d-tile-label strong {
+  font-size: 0.58rem;
+}
+
+.bank3d-tile-label.selected {
+  background: rgba(165, 96, 12, 0.88);
+}
+
+.bank3d-token-name {
+  padding: 3px 8px;
+  border-radius: 999px;
+  background: rgba(17, 34, 58, 0.82);
+  color: #fff;
+  font-size: 0.58rem;
+  white-space: nowrap;
+}
+
+.bank3d-die-value {
+  min-width: 18px;
+  border-radius: 6px;
+  background: rgba(17, 34, 58, 0.85);
+  color: #fff;
+  text-align: center;
+  font-size: 0.65rem;
+  font-weight: 700;
+  padding: 2px 5px;
+}
+
 @media (max-width: 1100px) {
   .room-grid {
     grid-template-columns: 1fr;
@@ -461,6 +637,19 @@ select {
 
   .room-grid > .panel {
     grid-column: span 1 !important;
+  }
+
+  .bank3d-canvas-panel {
+    min-height: 760px;
+  }
+
+  .bank3d-hud-left,
+  .bank3d-hud-right {
+    width: min(300px, calc(100% - 20px));
+  }
+
+  .bank3d-bottom-row {
+    grid-template-columns: 1fr;
   }
 }
 
@@ -477,5 +666,29 @@ select {
   .choice-grid,
   .panel-grid {
     grid-template-columns: 1fr;
+  }
+
+  .bank3d-canvas-panel {
+    min-height: 930px;
+  }
+
+  .bank3d-hud-top {
+    position: relative;
+    left: 0;
+    right: 0;
+    top: 0;
+    padding: 10px;
+    background: rgba(255, 255, 255, 0.8);
+    border-bottom: 1px solid #c6d9ec;
+  }
+
+  .bank3d-hud-left,
+  .bank3d-hud-right {
+    position: relative;
+    left: 0;
+    right: 0;
+    top: auto;
+    width: 100%;
+    padding: 10px;
   }
 }

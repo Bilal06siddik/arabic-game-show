@@ -6,7 +6,9 @@ import {
   type GameType,
   type JoinRoomInput,
   type Language,
+  type PieceColor,
   type Player,
+  PIECE_COLORS,
   type RoomMetaView,
   type Session,
   ROOM_LIMITS,
@@ -95,7 +97,16 @@ export class RoomManager {
 
   createBankRoom(input: CreateBankRoomInput, board: BankRoomState['board']): CreateRoomResult {
     const roomCode = this.generateUniqueRoomCode();
-    const hostPlayer = this.buildHostPlayer(input.hostName, input.language, input.hostMode === 'player');
+    const hostCanPlay = input.hostMode === 'player';
+    const hostPieceColor = hostCanPlay
+      ? this.resolvePieceColor([], input.pieceColor)
+      : undefined;
+    const hostPlayer = this.buildHostPlayer(
+      input.hostName,
+      input.language,
+      hostCanPlay,
+      hostPieceColor,
+    );
     const timestamp = now();
 
     const state: BankRoomState = {
@@ -153,6 +164,10 @@ export class RoomManager {
 
     const playerId = createId('p');
     const seatIndex = playablePlayers.length;
+    const pieceColor =
+      context.gameType === 'bank'
+        ? this.resolvePieceColor(context.state.players, payload.pieceColor)
+        : undefined;
     const player: Player = {
       id: playerId,
       name: payload.name,
@@ -161,6 +176,7 @@ export class RoomManager {
       isHost: false,
       connected: true,
       language: payload.language,
+      pieceColor,
       score: 0,
       joinedAt: now(),
       lastSeenAt: now(),
@@ -400,6 +416,21 @@ export class RoomManager {
     return context.state.players;
   }
 
+  listBankUsedColors(roomCode: string): PieceColor[] {
+    const context = this.bankRooms.get(roomCode);
+    if (!context) {
+      throw new Error('ROOM_NOT_FOUND');
+    }
+
+    const used = new Set<PieceColor>();
+    context.state.players.forEach((player) => {
+      if (player.pieceColor) {
+        used.add(player.pieceColor);
+      }
+    });
+    return [...used];
+  }
+
   private issueSession(
     context: RoomContext<{ players: Player[] }>,
     roomCode: string,
@@ -451,7 +482,28 @@ export class RoomManager {
     return attempt;
   }
 
-  private buildHostPlayer(hostName: string, language: Language, hostCanPlay: boolean): Player {
+  private resolvePieceColor(existingPlayers: Player[], preferred?: PieceColor): PieceColor {
+    const used = new Set(existingPlayers.map((player) => player.pieceColor).filter(Boolean));
+    if (preferred) {
+      if (used.has(preferred)) {
+        throw new Error('PIECE_COLOR_TAKEN');
+      }
+      return preferred;
+    }
+
+    const available = PIECE_COLORS.find((color) => !used.has(color));
+    if (!available) {
+      throw new Error('ROOM_FULL');
+    }
+    return available;
+  }
+
+  private buildHostPlayer(
+    hostName: string,
+    language: Language,
+    hostCanPlay: boolean,
+    pieceColor?: PieceColor,
+  ): Player {
     return {
       id: createId('host'),
       name: hostName,
@@ -460,6 +512,7 @@ export class RoomManager {
       isHost: true,
       connected: true,
       language,
+      pieceColor,
       score: 0,
       joinedAt: now(),
       lastSeenAt: now(),

@@ -44,6 +44,7 @@ describe('room-manager', () => {
         language: 'ar',
         hostCanPlay: true,
         rulePreset: 'official',
+        pieceColor: 'orange',
       },
       board,
     );
@@ -51,9 +52,35 @@ describe('room-manager', () => {
     const joined = manager.joinRoom(created.roomCode, {
       name: 'P2',
       language: 'ar',
+      pieceColor: 'teal',
     });
 
     const result = manager.markDisconnected('bank', created.roomCode, created.playerId);
     expect(result.newHostId).toBe(joined.playerId);
+    const bankRoom = manager.getBankRoom(created.roomCode);
+    expect(bankRoom?.state.players.find((player) => player.id === created.playerId)?.pieceColor).toBe('orange');
+    expect(bankRoom?.state.players.find((player) => player.id === joined.playerId)?.pieceColor).toBe('teal');
+  });
+
+  it('rejects joining with an already used piece color', () => {
+    const manager = new RoomManager();
+    const created = manager.createBankRoom(
+      {
+        hostName: 'Host',
+        language: 'ar',
+        hostCanPlay: true,
+        rulePreset: 'official',
+        pieceColor: 'orange',
+      },
+      board,
+    );
+
+    expect(() =>
+      manager.joinRoom(created.roomCode, {
+        name: 'P2',
+        language: 'ar',
+        pieceColor: 'orange',
+      }),
+    ).toThrow('PIECE_COLOR_TAKEN');
   });
 });

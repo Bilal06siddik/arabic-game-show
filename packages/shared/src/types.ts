@@ -3,6 +3,15 @@ export type Role = 'host' | 'player';
 export type GameType = 'casino' | 'bank';
 export type RoomStatus = 'lobby' | 'in_game' | 'finished';
 export type HostAction = 'pause' | 'resume' | 'skip' | 'kick' | 'score_adjust';
+export type PieceColor =
+  | 'red'
+  | 'blue'
+  | 'green'
+  | 'yellow'
+  | 'purple'
+  | 'orange'
+  | 'teal'
+  | 'pink';
 
 export interface Player {
   id: string;
@@ -12,6 +21,7 @@ export interface Player {
   isHost: boolean;
   connected: boolean;
   language: Language;
+  pieceColor?: PieceColor;
   score?: number;
   joinedAt: number;
   lastSeenAt: number;

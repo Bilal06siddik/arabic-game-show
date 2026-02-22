@@ -1,4 +1,4 @@
-import type { GameType, Language } from '@ags/shared';
+import type { GameType, Language, PieceColor } from '@ags/shared';
 
 export interface CreateRoomResponse {
   roomCode: string;
@@ -19,6 +19,10 @@ export interface ReconnectResponse {
   playerId: string;
   sessionToken: string;
   gameType: GameType;
+}
+
+export interface BankUsedColorsResponse {
+  usedColors: PieceColor[];
 }
 
 const API_BASE =
@@ -59,6 +63,7 @@ export function createBankRoom(payload: {
   language: Language;
   hostMode: 'player' | 'moderator' | 'ai';
   rulePreset: 'official' | 'house';
+  pieceColor?: PieceColor;
 }): Promise<CreateRoomResponse> {
   return request<CreateRoomResponse>('/api/bank/rooms/create', {
     method: 'POST',
@@ -68,7 +73,7 @@ export function createBankRoom(payload: {
 
 export function joinRoom(
   roomCode: string,
-  payload: { name: string; language: Language },
+  payload: { name: string; language: Language; pieceColor?: PieceColor },
 ): Promise<JoinRoomResponse> {
   return request<JoinRoomResponse>(`/api/rooms/${roomCode.toUpperCase()}/join`, {
     method: 'POST',
@@ -94,6 +99,10 @@ export function getRoomMeta(roomCode: string): Promise<{
   hostName?: string;
 }> {
   return request(`/api/rooms/${roomCode.toUpperCase()}/meta`);
+}
+
+export function getBankUsedColors(roomCode: string): Promise<BankUsedColorsResponse> {
+  return request(`/api/bank/rooms/${roomCode.toUpperCase()}/colors`);
 }
 
 export { API_BASE };

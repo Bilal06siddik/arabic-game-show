@@ -1,0 +1,1241 @@
+.bank-shell {
+  --bank-bg: #07121d;
+  --bank-surface: rgba(8, 25, 39, 0.88);
+  --bank-surface-soft: rgba(12, 33, 50, 0.86);
+  --bank-line: rgba(157, 201, 226, 0.24);
+  --bank-line-strong: rgba(187, 219, 239, 0.45);
+  --bank-text: #f2f8ff;
+  --bank-muted: #a7c0d4;
+  --bank-cyan: #34d4d1;
+  --bank-blue: #2f8ff7;
+  --bank-gold: #f4b84a;
+  --bank-danger: #ff5c76;
+  --bank-font-latin: 'Changa', 'IBM Plex Sans Arabic', 'Segoe UI', sans-serif;
+  --bank-font-ar: 'Tajawal', 'Cairo', 'IBM Plex Sans Arabic', sans-serif;
+  min-height: 100vh;
+  padding: 18px;
+  color: var(--bank-text);
+  background:
+    radial-gradient(circle at 88% -8%, rgba(38, 134, 204, 0.3), transparent 42%),
+    radial-gradient(circle at -10% 115%, rgba(8, 150, 119, 0.22), transparent 48%),
+    linear-gradient(165deg, #050c15 0%, #07121d 50%, #0b1f2d 100%);
+}
+
+.bank-shell,
+.bank-shell input,
+.bank-shell select,
+.bank-shell button {
+  font-family: var(--bank-font-latin);
+}
+
+[dir='rtl'] .bank-shell,
+[dir='rtl'] .bank-shell input,
+[dir='rtl'] .bank-shell select,
+[dir='rtl'] .bank-shell button {
+  font-family: var(--bank-font-ar);
+}
+
+.bank-shell-full .bank-shell-main {
+  max-width: none;
+}
+
+.bank-shell-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 14px;
+  padding: 18px 20px;
+  border-radius: 20px;
+  border: 1px solid var(--bank-line);
+  background: linear-gradient(135deg, rgba(9, 27, 43, 0.9), rgba(8, 23, 36, 0.84));
+  box-shadow:
+    0 18px 34px rgba(1, 7, 13, 0.5),
+    inset 0 1px 0 rgba(196, 222, 241, 0.08);
+  backdrop-filter: blur(8px);
+}
+
+.bank-shell-brand h1 {
+  margin: 4px 0 0;
+  font-size: clamp(1.45rem, 2.9vw, 2.4rem);
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+.bank-shell-kicker {
+  margin: 0;
+  color: var(--bank-gold);
+  font-size: 0.76rem;
+  font-weight: 700;
+  letter-spacing: 0.17em;
+}
+
+.bank-shell-subtitle {
+  margin: 8px 0 0;
+  color: var(--bank-muted);
+  font-size: 0.93rem;
+}
+
+.bank-shell-controls {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.bank-shell .lang-toggle {
+  border: 1px solid var(--bank-line);
+  background: rgba(6, 19, 29, 0.9);
+}
+
+.bank-shell .lang-toggle button {
+  color: var(--bank-muted);
+}
+
+.bank-shell .lang-toggle button.active {
+  background: linear-gradient(135deg, rgba(23, 145, 168, 0.95), rgba(31, 116, 227, 0.92));
+  color: #ffffff;
+  box-shadow: 0 10px 20px rgba(23, 104, 162, 0.35);
+}
+
+.bank-exit-link {
+  color: var(--bank-muted);
+  border: 1px solid var(--bank-line);
+  border-radius: 999px;
+  padding: 8px 14px;
+  font-size: 0.85rem;
+  transition: border-color 0.2s, color 0.2s, transform 0.2s;
+}
+
+.bank-exit-link:hover {
+  color: var(--bank-text);
+  border-color: var(--bank-gold);
+  transform: translateY(-1px);
+}
+
+.bank-shell-main {
+  max-width: 1580px;
+  margin: 16px auto 0;
+  display: grid;
+  gap: 16px;
+}
+
+.bank-lobby-hero {
+  width: min(980px, 100%);
+  margin: 0 auto;
+  padding: clamp(18px, 3vw, 30px);
+  border-radius: 20px;
+  border: 1px solid rgba(164, 203, 227, 0.32);
+  background:
+    radial-gradient(circle at 88% 0%, rgba(50, 172, 200, 0.24), transparent 42%),
+    radial-gradient(circle at 0% 100%, rgba(244, 184, 74, 0.16), transparent 45%),
+    linear-gradient(145deg, rgba(10, 28, 43, 0.93), rgba(9, 23, 36, 0.9));
+  box-shadow:
+    0 16px 30px rgba(1, 7, 13, 0.45),
+    inset 0 1px 0 rgba(201, 225, 241, 0.1);
+}
+
+.bank-lobby-kicker {
+  margin: 0;
+  font-size: 0.74rem;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  color: var(--bank-gold);
+}
+
+.bank-lobby-hero h2 {
+  margin: 6px 0 0;
+  font-size: clamp(1.5rem, 4vw, 2.45rem);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.bank-lobby-hero p {
+  margin: 10px 0 0;
+  color: var(--bank-muted);
+  max-width: 68ch;
+}
+
+.bank-lobby-meta {
+  margin-top: 14px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.bank-lobby-meta span {
+  padding: 6px 12px;
+  border-radius: 999px;
+  border: 1px solid rgba(164, 203, 227, 0.32);
+  background: rgba(9, 28, 41, 0.8);
+  color: #cde6f8;
+  font-size: 0.82rem;
+}
+
+.bank-lobby-grid {
+  display: grid;
+  gap: 18px;
+  grid-template-columns: repeat(auto-fit, minmax(360px, 1fr));
+  max-width: 1080px;
+  margin: 0 auto;
+}
+
+.bank-panel {
+  display: flex;
+  flex-direction: column;
+  background: linear-gradient(145deg, rgba(10, 28, 43, 0.9), rgba(9, 22, 35, 0.9));
+  border: 1px solid var(--bank-line);
+  border-radius: 18px;
+  padding: 24px;
+  box-shadow:
+    0 16px 32px rgba(1, 7, 13, 0.44),
+    inset 0 1px 0 rgba(196, 222, 241, 0.06);
+  animation: bank-panel-reveal 0.45s ease both;
+}
+
+.bank-lobby-panel {
+  min-height: 100%;
+}
+
+.bank-panel-header {
+  margin-bottom: 8px;
+}
+
+.bank-panel-kicker {
+  margin: 0 0 2px;
+  color: #8ec5df;
+  letter-spacing: 0.14em;
+  font-size: 0.72rem;
+  font-weight: 700;
+}
+
+.bank-panel h2 {
+  margin: 0 0 8px;
+}
+
+.bank-panel-create {
+  border-color: rgba(52, 212, 209, 0.55);
+}
+
+.bank-panel-join {
+  border-color: rgba(244, 184, 74, 0.5);
+}
+
+.bank-panel-hint {
+  margin: 0 0 14px;
+  color: var(--bank-muted);
+  font-size: 0.92rem;
+}
+
+.bank-lobby-panel .primary-btn {
+  width: 100%;
+  margin-top: auto;
+}
+
+.bank-lobby-error {
+  width: min(1080px, 100%);
+  margin: 0 auto;
+  padding: 11px 13px;
+  border: 1px solid rgba(255, 99, 120, 0.52);
+  border-radius: 12px;
+  background: rgba(88, 14, 31, 0.5);
+}
+
+.bank-field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-bottom: 12px;
+}
+
+.bank-label {
+  color: var(--bank-muted);
+  font-size: 0.93rem;
+  font-weight: 600;
+}
+
+.bank-shell .bank-field input,
+.bank-shell .bank-field select,
+.bank-shell .bank2d-card input,
+.bank-shell .bank2d-card select {
+  border: 1px solid var(--bank-line);
+  border-radius: 11px;
+  padding: 11px 13px;
+  font-size: 0.98rem;
+  color: var(--bank-text);
+  background: rgba(7, 20, 32, 0.92);
+  transition: border-color 0.2s, box-shadow 0.2s, background-color 0.2s;
+}
+
+.bank-shell .bank-field input:focus,
+.bank-shell .bank-field select:focus,
+.bank-shell .bank2d-card input:focus,
+.bank-shell .bank2d-card select:focus {
+  outline: none;
+  border-color: rgba(75, 207, 214, 0.95);
+  box-shadow: 0 0 0 2px rgba(52, 212, 209, 0.2);
+}
+
+.bank-color-grid {
+  display: grid;
+  gap: 8px;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+
+.bank-color-chip {
+  border: 1px solid var(--bank-line);
+  border-radius: 10px;
+  background: rgba(9, 23, 36, 0.9);
+  color: var(--bank-text);
+  padding: 8px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  justify-content: center;
+  cursor: pointer;
+  transition: border-color 0.2s, transform 0.2s, box-shadow 0.2s;
+}
+
+.bank-color-chip:hover {
+  border-color: rgba(52, 212, 209, 0.9);
+  transform: translateY(-1px);
+}
+
+.bank-color-chip.active {
+  border-color: rgba(244, 184, 74, 0.9);
+  box-shadow: 0 0 0 1px rgba(244, 184, 74, 0.5);
+}
+
+.bank-color-chip.taken {
+  border-color: rgba(255, 99, 120, 0.55);
+  background: rgba(60, 24, 34, 0.74);
+  color: rgba(255, 214, 222, 0.92);
+}
+
+.bank-color-chip:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.bank-color-dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  border: 1px solid rgba(255, 255, 255, 0.4);
+}
+
+.bank-shell .checkbox-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: var(--bank-muted);
+  margin-bottom: 20px;
+  cursor: pointer;
+  font-size: 0.95rem;
+  user-select: none;
+}
+
+.bank-shell .checkbox-row input[type='checkbox'] {
+  width: 20px;
+  height: 20px;
+  cursor: pointer;
+  accent-color: var(--bank-cyan);
+}
+
+.bank-shell .primary-btn,
+.bank-shell .secondary-btn,
+.bank-shell .danger-btn {
+  border-radius: 11px;
+}
+
+.bank-shell .primary-btn {
+  background: linear-gradient(135deg, #24b7ba, #2b7de8);
+  box-shadow: 0 8px 20px rgba(16, 104, 158, 0.36);
+}
+
+.bank-shell .primary-btn:hover {
+  filter: brightness(1.05);
+}
+
+.bank-shell .secondary-btn {
+  color: var(--bank-text);
+  border: 1px solid var(--bank-line);
+  background: rgba(10, 29, 44, 0.88);
+}
+
+.bank-shell .danger-btn {
+  background: linear-gradient(135deg, #ff6378, #f54760);
+  box-shadow: 0 8px 20px rgba(255, 93, 121, 0.28);
+}
+
+.bank-shell .notice-text {
+  color: var(--bank-text);
+  border: 1px solid rgba(52, 212, 209, 0.45);
+  background: rgba(6, 41, 45, 0.56);
+}
+
+.bank-onboarding-screen {
+  min-height: calc(100vh - 178px);
+  display: grid;
+  place-items: center;
+}
+
+.bank-onboarding-card {
+  width: min(560px, 100%);
+  background:
+    radial-gradient(circle at 100% 0%, rgba(29, 132, 202, 0.2), transparent 40%),
+    radial-gradient(circle at 0% 100%, rgba(35, 157, 128, 0.15), transparent 45%),
+    linear-gradient(150deg, rgba(8, 22, 36, 0.94), rgba(8, 19, 30, 0.94));
+  border: 1px solid var(--bank-line-strong);
+  border-radius: 18px;
+  padding: 22px;
+  box-shadow:
+    0 26px 38px rgba(1, 7, 13, 0.52),
+    inset 0 1px 0 rgba(196, 222, 241, 0.08);
+}
+
+.bank-onboarding-card h2 {
+  margin: 0;
+}
+
+.bank-onboarding-card p {
+  color: var(--bank-muted);
+}
+
+.bank-room-code-badge {
+  width: fit-content;
+  margin: 10px 0 16px;
+  padding: 6px 12px;
+  border-radius: 999px;
+  border: 1px solid var(--bank-line);
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  background: rgba(8, 25, 38, 0.92);
+}
+
+.bank-room-grid {
+  grid-template-columns: repeat(12, 1fr);
+}
+
+.bank-room-grid > .bank-panel:nth-child(1) {
+  grid-column: span 4;
+}
+
+.bank-room-grid > .bank-panel:nth-child(2) {
+  grid-column: span 4;
+}
+
+.bank-room-grid > .bank-panel:nth-child(3) {
+  grid-column: span 4;
+}
+
+.bank-room-grid > .bank-panel:nth-child(4) {
+  grid-column: span 12;
+}
+
+.bank-host-drawer summary {
+  cursor: pointer;
+  font-weight: 700;
+}
+
+.bank-shell .player-card,
+.bank-shell .tile-card,
+.bank-shell .event-list li,
+.bank-shell .auction-box {
+  border-color: rgba(142, 188, 216, 0.26);
+  background: rgba(10, 29, 43, 0.82);
+  color: var(--bank-text);
+}
+
+.bank-shell .player-card p,
+.bank-shell .tile-card p {
+  color: var(--bank-muted);
+}
+
+.bank2d-root {
+  display: grid;
+  gap: 16px;
+  max-width: 1720px;
+  margin: 0 auto;
+}
+
+.bank2d-root.loading {
+  justify-content: center;
+  align-items: center;
+  min-height: 500px;
+  font-size: 1.45rem;
+  color: var(--bank-cyan);
+}
+
+.bank2d-status-strip {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.bank2d-grid {
+  display: grid;
+  gap: 14px;
+  grid-template-columns: minmax(260px, 320px) minmax(0, 1fr) minmax(260px, 320px);
+  align-items: stretch;
+}
+
+.bank2d-side {
+  display: grid;
+  gap: 12px;
+  align-content: start;
+}
+
+.bank2d-board-stage {
+  min-width: 0;
+  display: grid;
+  gap: 12px;
+  align-content: start;
+}
+
+.bank2d-board-stage-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 8px;
+  padding: 12px 14px;
+  border-radius: 14px;
+  border: 1px solid rgba(148, 191, 218, 0.24);
+  background: rgba(10, 28, 42, 0.86);
+}
+
+.bank2d-board-stage-head h2 {
+  margin: 0;
+  font-size: clamp(1.02rem, 2.2vw, 1.36rem);
+  letter-spacing: 0.04em;
+}
+
+.bank2d-board-stage-head p {
+  margin: 0;
+  color: var(--bank-muted);
+  font-size: 0.9rem;
+}
+
+.bank2d-board-stage-meta {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  flex-wrap: wrap;
+  gap: 8px;
+  max-width: 62%;
+}
+
+.bank2d-board-shell {
+  position: relative;
+  border-radius: 18px;
+  border: 1px solid rgba(148, 191, 218, 0.26);
+  background:
+    radial-gradient(circle at 8% 4%, rgba(44, 161, 182, 0.16), transparent 34%),
+    radial-gradient(circle at 92% 96%, rgba(241, 172, 74, 0.15), transparent 37%),
+    linear-gradient(180deg, rgba(9, 24, 37, 0.93), rgba(6, 18, 29, 0.94));
+  padding: 12px;
+  box-shadow:
+    0 20px 36px rgba(1, 7, 13, 0.48),
+    inset 0 1px 0 rgba(196, 222, 241, 0.08);
+  overflow: hidden;
+}
+
+.bank2d-center-controls {
+  position: absolute;
+  left: 50%;
+  top: 60%;
+  transform: translate(-50%, -50%);
+  width: min(300px, calc(100% - 24px));
+  z-index: 30;
+  display: grid;
+  gap: 8px;
+  padding: 8px;
+  border-radius: 14px;
+  border: 1px solid rgba(148, 191, 218, 0.34);
+  background: rgba(8, 23, 35, 0.76);
+  box-shadow: 0 14px 28px rgba(1, 7, 13, 0.5);
+  backdrop-filter: blur(3px);
+}
+
+.bank2d-center-controls h4 {
+  margin: 0;
+  color: #d8ebf9;
+  font-size: 0.84rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  text-align: center;
+}
+
+.bank2d-center-controls .inline-actions {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
+
+.bank2d-board {
+  display: grid;
+  grid-template-columns: repeat(11, minmax(24px, 1fr));
+  grid-template-rows: repeat(11, minmax(24px, 1fr));
+  gap: 2px;
+  width: min(100%, 800px);
+  margin: 0 auto;
+  aspect-ratio: 1;
+  background: rgba(4, 12, 20, 0.95);
+  border: 4px solid rgba(143, 185, 212, 0.3);
+  border-radius: 12px;
+  padding: 4px;
+}
+
+.bank2d-tile {
+  background: rgba(9, 25, 38, 0.93);
+  border: 1px solid rgba(117, 173, 206, 0.24);
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  overflow: hidden;
+  cursor: pointer;
+  transition: border-color 0.2s, transform 0.2s, background-color 0.2s;
+  border-radius: 4px;
+}
+
+.bank2d-tile:hover {
+  background: rgba(19, 57, 83, 0.85);
+}
+
+.bank2d-tile.selected {
+  border-color: rgba(244, 184, 74, 0.95);
+  box-shadow:
+    0 0 0 1px rgba(244, 184, 74, 0.78),
+    inset 0 0 12px rgba(244, 184, 74, 0.24);
+  z-index: 10;
+  transform: translateY(-1px);
+}
+
+.tile-color-bar {
+  background-color: #576377;
+  position: absolute;
+  z-index: 1;
+  pointer-events: none;
+}
+
+.tile-bottom .tile-color-bar {
+  height: 20%;
+  width: 100%;
+  top: 0;
+  left: 0;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.45);
+}
+
+.tile-top .tile-color-bar {
+  height: 20%;
+  width: 100%;
+  bottom: 0;
+  left: 0;
+  border-top: 1px solid rgba(0, 0, 0, 0.45);
+}
+
+.tile-left .tile-color-bar {
+  height: 100%;
+  width: 20%;
+  top: 0;
+  right: 0;
+  border-left: 1px solid rgba(0, 0, 0, 0.45);
+}
+
+.tile-right .tile-color-bar {
+  height: 100%;
+  width: 20%;
+  top: 0;
+  left: 0;
+  border-right: 1px solid rgba(0, 0, 0, 0.45);
+}
+
+.tile-corner .tile-color-bar {
+  display: none;
+}
+
+.color-brown {
+  background-color: #9f7554;
+}
+
+.color-lightblue {
+  background-color: #58d1ff;
+}
+
+.color-pink {
+  background-color: #ef76b9;
+}
+
+.color-orange {
+  background-color: #fb8f44;
+}
+
+.color-red {
+  background-color: #f16262;
+}
+
+.color-yellow {
+  background-color: #ecc75f;
+}
+
+.color-green {
+  background-color: #48c387;
+}
+
+.color-darkblue {
+  background-color: #2d4fb8;
+}
+
+.tile-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
+  width: 100%;
+  padding: 4px;
+  text-align: center;
+  font-size: 0.62rem;
+  overflow: hidden;
+  gap: 2px;
+  position: relative;
+  z-index: 2;
+}
+
+.tile-left .tile-content {
+  padding-right: 24%;
+  padding-left: 4px;
+  font-size: 0.56rem;
+}
+
+.tile-right .tile-content {
+  padding-left: 24%;
+  padding-right: 4px;
+  font-size: 0.56rem;
+}
+
+.tile-top .tile-content {
+  padding-bottom: 24%;
+  padding-top: 4px;
+  font-size: 0.56rem;
+}
+
+.tile-bottom .tile-content {
+  padding-top: 24%;
+  padding-bottom: 4px;
+  font-size: 0.56rem;
+}
+
+[dir='rtl'] .tile-left .tile-content {
+  padding-left: 24%;
+  padding-right: 4px;
+}
+
+[dir='rtl'] .tile-right .tile-content {
+  padding-right: 24%;
+  padding-left: 4px;
+}
+
+.tile-name {
+  display: -webkit-box;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 3;
+  max-width: 100%;
+  font-weight: 700;
+  line-height: 1.08;
+  word-break: break-word;
+}
+
+.tile-corner .tile-name {
+  -webkit-line-clamp: 3;
+}
+
+.tile-kind {
+  margin-top: 2px;
+  font-size: 0.49rem;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: #9ec2d8;
+}
+
+.tile-top .tile-kind,
+.tile-bottom .tile-kind {
+  display: none;
+}
+
+.tile-price {
+  font-size: 0.51rem;
+  color: #99fde2;
+  margin-top: auto;
+  padding: 1px 4px;
+  border-radius: 999px;
+  background: rgba(8, 20, 30, 0.82);
+  border: 1px solid rgba(128, 240, 211, 0.22);
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', monospace;
+  line-height: 1.2;
+  white-space: nowrap;
+}
+
+.tile-tokens {
+  position: absolute;
+  right: 4px;
+  bottom: 4px;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 2px;
+  pointer-events: none;
+  z-index: 2;
+}
+
+.tile-top .tile-tokens {
+  bottom: 4px;
+}
+
+.tile-bottom .tile-tokens {
+  top: 4px;
+  bottom: auto;
+}
+
+.tile-left .tile-tokens {
+  right: 24%;
+}
+
+.tile-right .tile-tokens {
+  right: auto;
+  left: 24%;
+}
+
+.token-dot {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  border: 1px solid rgba(255, 255, 255, 0.85);
+  box-shadow: 0 0 7px rgba(0, 0, 0, 0.7);
+  transition: transform 120ms linear;
+}
+
+.token-dot.moving {
+  animation: token-pulse 0.42s ease-in-out infinite;
+}
+
+.tile-owner-marker {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 4px;
+  opacity: 0.95;
+}
+
+.tile-left .tile-owner-marker {
+  bottom: 0;
+  left: 0;
+  width: 4px;
+  height: 100%;
+}
+
+.tile-right .tile-owner-marker {
+  bottom: 0;
+  right: 0;
+  width: 4px;
+  height: 100%;
+  left: auto;
+}
+
+.tile-top .tile-owner-marker {
+  top: 0;
+  bottom: auto;
+}
+
+.bank2d-board-center {
+  grid-column: 2 / 11;
+  grid-row: 2 / 11;
+  background:
+    radial-gradient(circle at 35% 32%, rgba(43, 157, 178, 0.18), transparent 40%),
+    radial-gradient(circle at 73% 75%, rgba(244, 184, 74, 0.16), transparent 42%),
+    rgba(8, 25, 39, 0.72);
+  border: 2px dashed rgba(148, 191, 218, 0.25);
+  border-radius: 10px;
+  display: grid;
+  align-content: center;
+  justify-items: center;
+  gap: 8px;
+  position: relative;
+  margin: 4px;
+}
+
+.bank2d-logo {
+  font-size: clamp(1.3rem, 4.2vw, 3.3rem);
+  font-weight: 800;
+  color: #f4c46d;
+  text-shadow: 0 8px 22px rgba(0, 0, 0, 0.45);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.bank2d-center-tagline {
+  margin: 0;
+  color: #9ec2d8;
+  font-size: clamp(0.62rem, 1vw, 0.9rem);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.bank2d-card {
+  background: linear-gradient(145deg, rgba(10, 28, 43, 0.9), rgba(9, 21, 34, 0.9));
+  border: 1px solid rgba(148, 191, 218, 0.24);
+  border-radius: 14px;
+  padding: 14px;
+  box-shadow:
+    0 14px 26px rgba(1, 7, 13, 0.42),
+    inset 0 1px 0 rgba(196, 222, 241, 0.06);
+  animation: bank-panel-reveal 0.4s ease both;
+}
+
+.bank2d-card h3 {
+  margin-top: 0;
+  margin-bottom: 10px;
+  color: #92eff0;
+  font-size: 1.04rem;
+  border-bottom: 1px solid rgba(75, 207, 214, 0.25);
+  padding-bottom: 7px;
+}
+
+.bank2d-inline-box {
+  background: rgba(8, 22, 34, 0.84);
+  border: 1px solid rgba(148, 191, 218, 0.24);
+  border-radius: 10px;
+  padding: 11px;
+  margin-bottom: 11px;
+}
+
+.bank2d-inline-box p {
+  margin: 0 0 6px;
+}
+
+.bank2d-inline-box p:last-child {
+  margin-bottom: 0;
+}
+
+.bank2d-player-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  max-height: 640px;
+  overflow: auto;
+  padding-right: 2px;
+}
+
+.bank2d-player-card {
+  display: grid;
+  gap: 10px;
+  border: 1px solid rgba(148, 191, 218, 0.26);
+  border-radius: 12px;
+  padding: 10px;
+  background:
+    linear-gradient(150deg, rgba(10, 31, 47, 0.9), rgba(8, 23, 34, 0.9));
+}
+
+.bank2d-player-card.self {
+  border-color: rgba(244, 184, 74, 0.62);
+  box-shadow: inset 0 0 0 1px rgba(244, 184, 74, 0.28);
+}
+
+.bank2d-player-card.turn {
+  border-color: rgba(52, 212, 209, 0.68);
+  box-shadow: 0 0 0 1px rgba(52, 212, 209, 0.32);
+}
+
+.bank2d-player-card-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.bank2d-player-card-head h4 {
+  margin: 0;
+  font-size: 1rem;
+  letter-spacing: 0.01em;
+}
+
+.bank2d-player-state {
+  font-size: 0.72rem;
+  line-height: 1;
+  padding: 4px 8px;
+  border-radius: 999px;
+  border: 1px solid rgba(160, 208, 236, 0.35);
+  color: #cbe3f6;
+  background: rgba(8, 26, 40, 0.86);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.bank2d-player-state.active {
+  border-color: rgba(68, 226, 194, 0.45);
+  color: #8df4d6;
+}
+
+.bank2d-player-state.bankrupt {
+  border-color: rgba(255, 92, 118, 0.45);
+  color: #ffabb9;
+}
+
+.bank2d-player-metrics {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.bank2d-player-metric {
+  display: grid;
+  gap: 4px;
+  padding: 8px 7px;
+  border-radius: 10px;
+  border: 1px solid rgba(148, 191, 218, 0.2);
+  background: rgba(7, 21, 33, 0.9);
+}
+
+.bank2d-player-metric span {
+  color: #8fb5cf;
+  font-size: 0.68rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.bank2d-player-metric strong {
+  font-size: 1.02rem;
+  line-height: 1;
+  color: #eff7ff;
+}
+
+.bank2d-player-metric.cash strong {
+  color: #9cf7de;
+}
+
+.bank2d-bottom-row {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px;
+}
+
+.bank2d-pill {
+  padding: 8px 14px;
+  border-radius: 999px;
+  background: rgba(8, 24, 37, 0.9);
+  border: 1px solid rgba(148, 191, 218, 0.34);
+  font-size: 0.84rem;
+  box-shadow: 0 7px 16px rgba(1, 7, 13, 0.35);
+}
+
+.bank2d-pill.danger {
+  border-color: rgba(255, 92, 118, 0.74);
+  color: #ffd3dc;
+  background: rgba(86, 18, 33, 0.62);
+}
+
+.bank2d-events {
+  max-height: 300px;
+  overflow: auto;
+}
+
+.bank2d-events summary,
+.bank2d-host-drawer summary {
+  cursor: pointer;
+  font-weight: 700;
+  margin-bottom: 10px;
+}
+
+.bank2d-host-drawer {
+  max-height: 300px;
+  overflow: auto;
+}
+
+.bank2d-dice-overlay {
+  position: static;
+  display: flex;
+  gap: 6px;
+  align-items: center;
+  justify-content: flex-end;
+  pointer-events: none;
+}
+
+.bank2d-die {
+  width: 42px;
+  height: 42px;
+  background: linear-gradient(145deg, #f5f7fa, #fefefe);
+  border-radius: 10px;
+  color: #1f2937;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 1.25rem;
+  font-weight: 800;
+  box-shadow:
+    0 6px 14px rgba(0, 0, 0, 0.42),
+    inset 0 0 12px rgba(0, 0, 0, 0.08);
+}
+
+@keyframes dice-roll {
+  0% {
+    transform: scale(0.35) translateY(-140px) rotate(0deg);
+    opacity: 0;
+  }
+
+  44% {
+    transform: scale(1.25) translateY(20px) rotate(330deg);
+    opacity: 1;
+  }
+
+  70% {
+    transform: scale(0.92) translateY(-10px) rotate(520deg);
+  }
+
+  100% {
+    transform: scale(1) translateY(0) rotate(720deg);
+  }
+}
+
+.animate-roll .bank2d-die {
+  animation: dice-roll 0.8s cubic-bezier(0.2, 0.98, 0.46, 1) forwards;
+}
+
+.animate-roll .bank2d-die:nth-child(2) {
+  animation-delay: 0.12s;
+}
+
+@keyframes bank-panel-reveal {
+  from {
+    transform: translateY(8px);
+    opacity: 0;
+  }
+
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+@keyframes token-pulse {
+  0% {
+    transform: scale(1);
+  }
+
+  50% {
+    transform: scale(1.22);
+  }
+
+  100% {
+    transform: scale(1);
+  }
+}
+
+@media (max-width: 1360px) {
+  .bank2d-grid {
+    grid-template-columns: minmax(240px, 300px) minmax(0, 1fr) minmax(240px, 300px);
+  }
+}
+
+@media (max-width: 1180px) {
+  .bank2d-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .bank2d-side {
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  }
+
+  .bank2d-board-stage {
+    order: -1;
+  }
+
+  .bank2d-bottom-row {
+    grid-template-columns: 1fr;
+  }
+
+  .bank2d-player-list {
+    max-height: 340px;
+  }
+}
+
+@media (max-width: 760px) {
+  .bank-shell {
+    padding: 10px;
+  }
+
+  .bank-shell-header {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .bank-shell-controls {
+    justify-content: space-between;
+  }
+
+  .bank-color-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .bank-lobby-hero p {
+    max-width: 100%;
+  }
+
+  .bank-lobby-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .bank2d-status-strip {
+    gap: 8px;
+  }
+
+  .bank2d-pill {
+    width: 100%;
+  }
+
+  .bank2d-board-shell {
+    padding: 10px;
+  }
+
+  .bank2d-board {
+    min-width: 320px;
+  }
+
+  .bank2d-center-controls {
+    width: min(280px, calc(100% - 20px));
+    padding: 8px;
+    top: 63%;
+  }
+
+  .bank2d-board-stage-meta {
+    max-width: 100%;
+    justify-content: flex-start;
+  }
+
+  .bank2d-player-metrics {
+    grid-template-columns: 1fr;
+  }
+
+  .bank2d-dice-overlay {
+    gap: 5px;
+  }
+
+  .bank2d-die {
+    width: 36px;
+    height: 36px;
+    font-size: 1.1rem;
+  }
+
+  .bank2d-board-center {
+    margin: 2px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .bank-panel,
+  .bank2d-card,
+  .animate-roll .bank2d-die,
+  .token-dot.moving {
+    animation: none;
+  }
+}

@@ -24,7 +24,7 @@ export function LanguageProvider({ children }: PropsWithChildren): JSX.Element {
     if (saved === 'ar' || saved === 'en') {
       return saved;
     }
-    return 'ar';
+    return 'en';
   });
 
   useEffect(() => {

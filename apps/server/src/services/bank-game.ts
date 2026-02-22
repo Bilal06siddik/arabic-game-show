@@ -549,6 +549,16 @@ export class BankGameService {
       this.options.state.paused = false;
     } else if (action === 'skip') {
       const turn = this.requireTurn();
+      if (payload?.playerId && payload.playerId !== turn.currentPlayerId) {
+        const target = this.options.state.bankPlayers.find(
+          (player) => player.playerId === payload.playerId && !player.bankrupt,
+        );
+        if (!target) {
+          return;
+        }
+        turn.currentPlayerId = target.playerId;
+        turn.hasRolled = true;
+      }
       this.options.state.pendingAction = { type: 'end_turn' };
       this.endTurn(turn.currentPlayerId);
     } else if (action === 'kick' && payload?.playerId) {
@@ -645,6 +655,7 @@ export class BankGameService {
     }
 
     if (tile.kind === 'chance') {
+      this.options.state.pendingAction = undefined;
       this.resolveCard(playerId, 'chance');
       if (!this.options.state.pendingAction) {
         this.options.state.pendingAction = { type: 'end_turn' };
@@ -653,6 +664,7 @@ export class BankGameService {
     }
 
     if (tile.kind === 'chest') {
+      this.options.state.pendingAction = undefined;
       this.resolveCard(playerId, 'chest');
       if (!this.options.state.pendingAction) {
         this.options.state.pendingAction = { type: 'end_turn' };
@@ -661,7 +673,7 @@ export class BankGameService {
     }
 
     if (tile.kind === 'free_parking') {
-      if (this.useHouseRules() && this.options.state.freeParkingPot > 0) {
+      if (this.useFreeParkingJackpot() && this.options.state.freeParkingPot > 0) {
         player.cash += this.options.state.freeParkingPot;
         this.options.state.freeParkingPot = 0;
       }
@@ -751,7 +763,7 @@ export class BankGameService {
       from.cash -= amount;
       if (toPlayerId) {
         this.requireBankPlayer(toPlayerId).cash += amount;
-      } else if (this.useHouseRules() && ['TAX', 'CARD_PAYMENT'].includes(reason)) {
+      } else if (this.useFreeParkingJackpot() && ['TAX', 'CARD_PAYMENT'].includes(reason)) {
         this.options.state.freeParkingPot += amount;
       }
       return;
@@ -1006,7 +1018,11 @@ export class BankGameService {
   }
 
   private useHouseRules(): boolean {
-    return this.options.state.rulePreset === 'house' || this.options.state.board.houseRules.freeParkingJackpot;
+    return this.options.state.rulePreset === 'house';
+  }
+
+  private useFreeParkingJackpot(): boolean {
+    return this.useHouseRules() && this.options.state.board.houseRules.freeParkingJackpot;
   }
 
   private roll(): RollResult {

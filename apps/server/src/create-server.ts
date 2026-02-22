@@ -267,6 +267,16 @@ export function createAppRuntime(): AppRuntime {
     }
   });
 
+  app.get('/api/bank/rooms/:code/colors', (req, res, next) => {
+    try {
+      const roomCode = String(req.params.code ?? '').toUpperCase();
+      const usedColors = roomManager.listBankUsedColors(roomCode);
+      res.status(200).json({ usedColors });
+    } catch (error) {
+      next(error);
+    }
+  });
+
   app.post('/api/rooms/:code/reconnect', (req, res, next) => {
     try {
       const roomCode = String(req.params.code ?? '').toUpperCase();

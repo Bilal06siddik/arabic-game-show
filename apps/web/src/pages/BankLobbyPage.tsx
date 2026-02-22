@@ -1,8 +1,10 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+import { PIECE_COLORS, type PieceColor } from '@ags/shared';
 import { useNavigate } from 'react-router-dom';
-import { PageLayout } from '../components/PageLayout';
+import { BankPieceColorPicker } from '../components/BankPieceColorPicker';
+import { BankShellLayout } from '../components/BankShellLayout';
 import { useLanguage } from '../components/LanguageProvider';
-import { createBankRoom, joinRoom } from '../lib/api';
+import { createBankRoom, getBankUsedColors, joinRoom } from '../lib/api';
 import { saveSession } from '../lib/session';
 
 export function BankLobbyPage(): JSX.Element {
@@ -13,8 +15,48 @@ export function BankLobbyPage(): JSX.Element {
   const [roomCode, setRoomCode] = useState('');
   const [rulePreset, setRulePreset] = useState<'official' | 'house'>('official');
   const [hostMode, setHostMode] = useState<'player' | 'moderator' | 'ai'>('player');
+  const [hostPieceColor, setHostPieceColor] = useState<PieceColor>('red');
+  const [joinPieceColor, setJoinPieceColor] = useState<PieceColor>('blue');
+  const [usedJoinColors, setUsedJoinColors] = useState<PieceColor[]>([]);
+  const hostCanPlay = hostMode === 'player';
   const [error, setError] = useState<string>('');
   const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    let cancelled = false;
+    if (roomCode.trim().length < 4) {
+      setUsedJoinColors([]);
+      return () => undefined;
+    }
+
+    getBankUsedColors(roomCode)
+      .then((response) => {
+        if (cancelled) {
+          return;
+        }
+        setUsedJoinColors(response.usedColors);
+      })
+      .catch(() => {
+        if (cancelled) {
+          return;
+        }
+        setUsedJoinColors([]);
+      });
+
+    return () => {
+      cancelled = true;
+    };
+  }, [roomCode]);
+
+  useEffect(() => {
+    if (!usedJoinColors.includes(joinPieceColor)) {
+      return;
+    }
+    const fallback = PIECE_COLORS.find((color) => !usedJoinColors.includes(color));
+    if (fallback) {
+      setJoinPieceColor(fallback);
+    }
+  }, [joinPieceColor, usedJoinColors]);
 
   async function onCreateRoom(): Promise<void> {
     try {
@@ -25,6 +67,7 @@ export function BankLobbyPage(): JSX.Element {
         language,
         hostMode,
         rulePreset,
+        pieceColor: hostPieceColor,
       });
 
       saveSession({
@@ -34,6 +77,7 @@ export function BankLobbyPage(): JSX.Element {
         sessionToken: response.sessionToken,
         name: hostName,
         language,
+        pieceColor: hostPieceColor,
       });
 
       navigate(`/bank/${response.roomCode}`);
@@ -51,6 +95,7 @@ export function BankLobbyPage(): JSX.Element {
       const response = await joinRoom(roomCode, {
         name: joinName,
         language,
+        pieceColor: joinPieceColor,
       });
 
       if (response.gameType !== 'bank') {
@@ -64,6 +109,7 @@ export function BankLobbyPage(): JSX.Element {
         sessionToken: response.sessionToken,
         name: joinName,
         language,
+        pieceColor: joinPieceColor,
       });
 
       navigate(`/bank/${response.roomCode}`);
@@ -75,16 +121,36 @@ export function BankLobbyPage(): JSX.Element {
   }
 
   return (
-    <PageLayout title={tr('bank.title')} backTo="/">
-      <div className="panel-grid">
-        <section className="panel">
-          <h2>{tr('common.create')}</h2>
-          <label>
-            {tr('common.name')}
+    <BankShellLayout subtitle={tr('bank.onboardingHint')}>
+      <section className="bank-lobby-hero">
+        <p className="bank-lobby-kicker">BANK ALHAZ</p>
+        <h2>{tr('bank.title')}</h2>
+        <p>{tr('bank.onboardingHint')}</p>
+        <div className="bank-lobby-meta">
+          <span>{tr('common.create')}</span>
+          <span>{tr('common.join')}</span>
+          <span>{tr('bank.rulePreset')}</span>
+        </div>
+      </section>
+
+      <div className="bank-lobby-grid">
+        <section className="bank-panel bank-panel-create bank-lobby-panel">
+          <header className="bank-panel-header">
+            <p className="bank-panel-kicker">01</p>
+            <h2>{tr('common.create')}</h2>
+            <p className="bank-panel-hint">{tr('bank.onboardingHint')}</p>
+          </header>
+          <label className="bank-field">
+            <span className="bank-label">{tr('common.name')}</span>
             <input value={hostName} onChange={(event) => setHostName(event.target.value)} maxLength={24} />
           </label>
-          <label>
-            {tr('bank.rulePreset')}
+          <BankPieceColorPicker
+            value={hostPieceColor}
+            onChange={setHostPieceColor}
+            disabled={!hostCanPlay}
+          />
+          <label className="bank-field">
+            <span className="bank-label">{tr('bank.rulePreset')}</span>
             <select
               value={rulePreset}
               onChange={(event) => setRulePreset(event.target.value as 'official' | 'house')}
@@ -106,14 +172,23 @@ export function BankLobbyPage(): JSX.Element {
           </button>
         </section>
 
-        <section className="panel">
-          <h2>{tr('common.join')}</h2>
-          <label>
-            {tr('common.name')}
+        <section className="bank-panel bank-panel-join bank-lobby-panel">
+          <header className="bank-panel-header">
+            <p className="bank-panel-kicker">02</p>
+            <h2>{tr('common.join')}</h2>
+            <p className="bank-panel-hint">{tr('bank.onboardingTitle')}</p>
+          </header>
+          <label className="bank-field">
+            <span className="bank-label">{tr('common.name')}</span>
             <input value={joinName} onChange={(event) => setJoinName(event.target.value)} maxLength={24} />
           </label>
-          <label>
-            {tr('common.roomCode')}
+          <BankPieceColorPicker
+            value={joinPieceColor}
+            onChange={setJoinPieceColor}
+            unavailableColors={usedJoinColors}
+          />
+          <label className="bank-field">
+            <span className="bank-label">{tr('common.roomCode')}</span>
             <input
               value={roomCode}
               onChange={(event) => setRoomCode(event.target.value.toUpperCase())}
@@ -123,14 +198,19 @@ export function BankLobbyPage(): JSX.Element {
           <button
             type="button"
             className="primary-btn"
-            disabled={loading || !joinName.trim() || roomCode.trim().length < 4}
+            disabled={
+              loading ||
+              !joinName.trim() ||
+              roomCode.trim().length < 4 ||
+              usedJoinColors.includes(joinPieceColor)
+            }
             onClick={onJoinRoom}
           >
             {tr('common.join')}
           </button>
         </section>
       </div>
-      {error ? <p className="error-text">{error}</p> : null}
-    </PageLayout>
+      {error ? <p className="error-text bank-lobby-error">{error}</p> : null}
+    </BankShellLayout>
   );
 }

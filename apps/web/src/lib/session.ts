@@ -1,4 +1,4 @@
-import type { GameType, Language } from '@ags/shared';
+import type { GameType, Language, PieceColor } from '@ags/shared';
 
 export interface RoomSession {
   roomCode: string;
@@ -7,6 +7,7 @@ export interface RoomSession {
   sessionToken: string;
   name: string;
   language: Language;
+  pieceColor?: PieceColor;
 }
 
 function key(gameType: GameType, roomCode: string): string {

@@ -1,4 +1,5 @@
 import { z } from 'zod';
+import { PIECE_COLORS } from './constants.js';
 
 export const languageSchema = z.enum(['ar', 'en']);
 export const roleSchema = z.enum(['host', 'player']);
@@ -9,6 +10,7 @@ export const hostActionSchema = z.enum([
   'kick',
   'score_adjust',
 ]);
+export const pieceColorSchema = z.enum(PIECE_COLORS);
 
 export const createCasinoRoomSchema = z.object({
   hostName: z.string().trim().min(1).max(24),
@@ -22,11 +24,13 @@ export const createBankRoomSchema = z.object({
   language: languageSchema.default('ar'),
   hostMode: z.enum(['player', 'moderator', 'ai']).default('player'),
   rulePreset: z.enum(['official', 'house']).default('official'),
+  pieceColor: pieceColorSchema.optional(),
 });
 
 export const joinRoomSchema = z.object({
   name: z.string().trim().min(1).max(24),
   language: languageSchema.default('ar'),
+  pieceColor: pieceColorSchema.optional(),
 });
 
 export const reconnectSchema = z.object({
