@@ -13,14 +13,14 @@ export const hostActionSchema = z.enum([
 export const createCasinoRoomSchema = z.object({
   hostName: z.string().trim().min(1).max(24),
   language: languageSchema.default('ar'),
-  hostCanPlay: z.boolean().default(true),
+  hostMode: z.enum(['player', 'moderator', 'ai']).default('player'),
   targetScore: z.number().int().min(5).max(50).default(10),
 });
 
 export const createBankRoomSchema = z.object({
   hostName: z.string().trim().min(1).max(24),
   language: languageSchema.default('ar'),
-  hostCanPlay: z.boolean().default(true),
+  hostMode: z.enum(['player', 'moderator', 'ai']).default('player'),
   rulePreset: z.enum(['official', 'house']).default('official'),
 });
 

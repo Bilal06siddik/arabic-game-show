@@ -12,7 +12,7 @@ export function BankLobbyPage(): JSX.Element {
   const [joinName, setJoinName] = useState('');
   const [roomCode, setRoomCode] = useState('');
   const [rulePreset, setRulePreset] = useState<'official' | 'house'>('official');
-  const [hostCanPlay, setHostCanPlay] = useState(true);
+  const [hostMode, setHostMode] = useState<'player' | 'moderator' | 'ai'>('player');
   const [error, setError] = useState<string>('');
   const [loading, setLoading] = useState(false);
 
@@ -23,7 +23,7 @@ export function BankLobbyPage(): JSX.Element {
       const response = await createBankRoom({
         hostName,
         language,
-        hostCanPlay,
+        hostMode,
         rulePreset,
       });
 
@@ -96,8 +96,8 @@ export function BankLobbyPage(): JSX.Element {
           <label className="checkbox-row">
             <input
               type="checkbox"
-              checked={hostCanPlay}
-              onChange={(event) => setHostCanPlay(event.target.checked)}
+              checked={hostMode === 'player'}
+              onChange={(event) => setHostMode(event.target.checked ? 'player' : 'moderator')}
             />
             {tr('common.hostCanPlay')}
           </label>

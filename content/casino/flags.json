@@ -1,14 +1,416 @@
 [
-  { "id": "flag-sa", "countryCode": "sa", "countryName": "المملكة العربية السعودية", "answer": "المملكة العربية السعودية", "alt": ["السعودية", "سعوديه"] },
-  { "id": "flag-eg", "countryCode": "eg", "countryName": "مصر", "answer": "مصر", "alt": ["Egypt"] },
-  { "id": "flag-us", "countryCode": "us", "countryName": "الولايات المتحدة الأمريكية", "answer": "الولايات المتحدة الأمريكية", "alt": ["امريكا", "USA"] },
-  { "id": "flag-gb", "countryCode": "gb", "countryName": "المملكة المتحدة", "answer": "المملكة المتحدة", "alt": ["بريطانيا", "انجلترا"] },
-  { "id": "flag-fr", "countryCode": "fr", "countryName": "فرنسا", "answer": "فرنسا", "alt": [] },
-  { "id": "flag-de", "countryCode": "de", "countryName": "ألمانيا", "answer": "ألمانيا", "alt": ["المانيا"] },
-  { "id": "flag-jp", "countryCode": "jp", "countryName": "اليابان", "answer": "اليابان", "alt": ["يابان"] },
-  { "id": "flag-ae", "countryCode": "ae", "countryName": "الإمارات", "answer": "الإمارات العربية المتحدة", "alt": ["الإمارات", "امارات"] },
-  { "id": "flag-jo", "countryCode": "jo", "countryName": "الأردن", "answer": "الأردن", "alt": ["الاردن"] },
-  { "id": "flag-ma", "countryCode": "ma", "countryName": "المغرب", "answer": "المغرب", "alt": [] },
-  { "id": "flag-tr", "countryCode": "tr", "countryName": "تركيا", "answer": "تركيا", "alt": ["تركيه"] },
-  { "id": "flag-ca", "countryCode": "ca", "countryName": "كندا", "answer": "كندا", "alt": [] }
+  {
+    "id": "flag-sa",
+    "countryCode": "sa",
+    "countryName": "المملكة العربية السعودية",
+    "answer": "المملكة العربية السعودية",
+    "alt": [
+      "السعودية",
+      "سعودية",
+      "سعوديه",
+      "Saudi Arabia",
+      "Saudi",
+      "KSA"
+    ]
+  },
+  {
+    "id": "flag-eg",
+    "countryCode": "eg",
+    "countryName": "مصر",
+    "answer": "مصر",
+    "alt": [
+      "Egypt",
+      "مصري"
+    ]
+  },
+  {
+    "id": "flag-us",
+    "countryCode": "us",
+    "countryName": "الولايات المتحدة الأمريكية",
+    "answer": "الولايات المتحدة الأمريكية",
+    "alt": [
+      "امريكا",
+      "أمريكا",
+      "امريكيا",
+      "USA",
+      "United States",
+      "America",
+      "US"
+    ]
+  },
+  {
+    "id": "flag-gb",
+    "countryCode": "gb",
+    "countryName": "المملكة المتحدة",
+    "answer": "المملكة المتحدة",
+    "alt": [
+      "بريطانيا",
+      "انجلترا",
+      "إنجلترا",
+      "UK",
+      "Britain",
+      "England",
+      "United Kingdom"
+    ]
+  },
+  {
+    "id": "flag-fr",
+    "countryCode": "fr",
+    "countryName": "فرنسا",
+    "answer": "فرنسا",
+    "alt": [
+      "France"
+    ]
+  },
+  {
+    "id": "flag-de",
+    "countryCode": "de",
+    "countryName": "ألمانيا",
+    "answer": "ألمانيا",
+    "alt": [
+      "المانيا",
+      "Germany",
+      "Deutschland"
+    ]
+  },
+  {
+    "id": "flag-jp",
+    "countryCode": "jp",
+    "countryName": "اليابان",
+    "answer": "اليابان",
+    "alt": [
+      "يابان",
+      "Japan"
+    ]
+  },
+  {
+    "id": "flag-ae",
+    "countryCode": "ae",
+    "countryName": "الإمارات",
+    "answer": "الإمارات العربية المتحدة",
+    "alt": [
+      "الإمارات",
+      "إمارات",
+      "امارات",
+      "UAE",
+      "Emirates",
+      "Dubai"
+    ]
+  },
+  {
+    "id": "flag-jo",
+    "countryCode": "jo",
+    "countryName": "الأردن",
+    "answer": "الأردن",
+    "alt": [
+      "الاردن",
+      "اردن",
+      "Jordan"
+    ]
+  },
+  {
+    "id": "flag-ma",
+    "countryCode": "ma",
+    "countryName": "المغرب",
+    "answer": "المغرب",
+    "alt": [
+      "مغرب",
+      "Morocco"
+    ]
+  },
+  {
+    "id": "flag-tr",
+    "countryCode": "tr",
+    "countryName": "تركيا",
+    "answer": "تركيا",
+    "alt": [
+      "تركيه",
+      "Turkey",
+      "Türkiye"
+    ]
+  },
+  {
+    "id": "flag-ca",
+    "countryCode": "ca",
+    "countryName": "كندا",
+    "answer": "كندا",
+    "alt": [
+      "Canada"
+    ]
+  },
+  {
+    "id": "flag-cn",
+    "countryCode": "cn",
+    "countryName": "الصين",
+    "answer": "الصين",
+    "alt": [
+      "صين",
+      "China"
+    ]
+  },
+  {
+    "id": "flag-ru",
+    "countryCode": "ru",
+    "countryName": "روسيا",
+    "answer": "روسيا",
+    "alt": [
+      "Russia"
+    ]
+  },
+  {
+    "id": "flag-in",
+    "countryCode": "in",
+    "countryName": "الهند",
+    "answer": "الهند",
+    "alt": [
+      "هند",
+      "India"
+    ]
+  },
+  {
+    "id": "flag-br",
+    "countryCode": "br",
+    "countryName": "البرازيل",
+    "answer": "البرازيل",
+    "alt": [
+      "برازيل",
+      "Brazil"
+    ]
+  },
+  {
+    "id": "flag-iq",
+    "countryCode": "iq",
+    "countryName": "العراق",
+    "answer": "العراق",
+    "alt": [
+      "عراق",
+      "Iraq"
+    ]
+  },
+  {
+    "id": "flag-sy",
+    "countryCode": "sy",
+    "countryName": "سوريا",
+    "answer": "سوريا",
+    "alt": [
+      "Syria"
+    ]
+  },
+  {
+    "id": "flag-lb",
+    "countryCode": "lb",
+    "countryName": "لبنان",
+    "answer": "لبنان",
+    "alt": [
+      "Lebanon"
+    ]
+  },
+  {
+    "id": "flag-ps",
+    "countryCode": "ps",
+    "countryName": "فلسطين",
+    "answer": "فلسطين",
+    "alt": [
+      "Palestine"
+    ]
+  },
+  {
+    "id": "flag-kw",
+    "countryCode": "kw",
+    "countryName": "الكويت",
+    "answer": "الكويت",
+    "alt": [
+      "كويت",
+      "Kuwait"
+    ]
+  },
+  {
+    "id": "flag-qa",
+    "countryCode": "qa",
+    "countryName": "قطر",
+    "answer": "قطر",
+    "alt": [
+      "Qatar"
+    ]
+  },
+  {
+    "id": "flag-bh",
+    "countryCode": "bh",
+    "countryName": "البحرين",
+    "answer": "البحرين",
+    "alt": [
+      "بحرين",
+      "Bahrain"
+    ]
+  },
+  {
+    "id": "flag-om",
+    "countryCode": "om",
+    "countryName": "عُمان",
+    "answer": "عُمان",
+    "alt": [
+      "عمان",
+      "Oman"
+    ]
+  },
+  {
+    "id": "flag-ye",
+    "countryCode": "ye",
+    "countryName": "اليمن",
+    "answer": "اليمن",
+    "alt": [
+      "يمن",
+      "Yemen"
+    ]
+  },
+  {
+    "id": "flag-ly",
+    "countryCode": "ly",
+    "countryName": "ليبيا",
+    "answer": "ليبيا",
+    "alt": [
+      "ليبيه",
+      "Libya"
+    ]
+  },
+  {
+    "id": "flag-tn",
+    "countryCode": "tn",
+    "countryName": "تونس",
+    "answer": "تونس",
+    "alt": [
+      "Tunisia"
+    ]
+  },
+  {
+    "id": "flag-dz",
+    "countryCode": "dz",
+    "countryName": "الجزائر",
+    "answer": "الجزائر",
+    "alt": [
+      "جزائر",
+      "Algeria"
+    ]
+  },
+  {
+    "id": "flag-it",
+    "countryCode": "it",
+    "countryName": "إيطاليا",
+    "answer": "إيطاليا",
+    "alt": [
+      "ايطاليا",
+      "Italy"
+    ]
+  },
+  {
+    "id": "flag-es",
+    "countryCode": "es",
+    "countryName": "إسبانيا",
+    "answer": "إسبانيا",
+    "alt": [
+      "اسبانيا",
+      "Spain"
+    ]
+  },
+  {
+    "id": "flag-nl",
+    "countryCode": "nl",
+    "countryName": "هولندا",
+    "answer": "هولندا",
+    "alt": [
+      "Netherlands",
+      "Holland"
+    ]
+  },
+  {
+    "id": "flag-pt",
+    "countryCode": "pt",
+    "countryName": "البرتغال",
+    "answer": "البرتغال",
+    "alt": [
+      "برتغال",
+      "Portugal"
+    ]
+  },
+  {
+    "id": "flag-mx",
+    "countryCode": "mx",
+    "countryName": "المكسيك",
+    "answer": "المكسيك",
+    "alt": [
+      "مكسيك",
+      "Mexico"
+    ]
+  },
+  {
+    "id": "flag-ar",
+    "countryCode": "ar",
+    "countryName": "الأرجنتين",
+    "answer": "الأرجنتين",
+    "alt": [
+      "أرجنتين",
+      "ارجنتين",
+      "Argentina"
+    ]
+  },
+  {
+    "id": "flag-pk",
+    "countryCode": "pk",
+    "countryName": "باكستان",
+    "answer": "باكستان",
+    "alt": [
+      "Pakistan"
+    ]
+  },
+  {
+    "id": "flag-ng",
+    "countryCode": "ng",
+    "countryName": "نيجيريا",
+    "answer": "نيجيريا",
+    "alt": [
+      "Nigeria"
+    ]
+  },
+  {
+    "id": "flag-kr",
+    "countryCode": "kr",
+    "countryName": "كوريا الجنوبية",
+    "answer": "كوريا الجنوبية",
+    "alt": [
+      "كوريا",
+      "كوريه",
+      "South Korea",
+      "Korea"
+    ]
+  },
+  {
+    "id": "flag-za",
+    "countryCode": "za",
+    "countryName": "جنوب أفريقيا",
+    "answer": "جنوب أفريقيا",
+    "alt": [
+      "جنوب افريقيا",
+      "South Africa"
+    ]
+  },
+  {
+    "id": "flag-au",
+    "countryCode": "au",
+    "countryName": "أستراليا",
+    "answer": "أستراليا",
+    "alt": [
+      "استراليا",
+      "Australia"
+    ]
+  },
+  {
+    "id": "flag-id",
+    "countryCode": "id",
+    "countryName": "إندونيسيا",
+    "answer": "إندونيسيا",
+    "alt": [
+      "اندونيسيا",
+      "Indonesia"
+    ]
+  }
 ]

@@ -38,12 +38,14 @@ interface HostActionPayload {
 export class CasinoGameService {
   private answerTimer: NodeJS.Timeout | undefined;
   private drawingTimer: NodeJS.Timeout | undefined;
+  private autoNextTimer: NodeJS.Timeout | undefined;
 
-  constructor(private readonly options: CasinoGameServiceOptions) {}
+  constructor(private readonly options: CasinoGameServiceOptions) { }
 
   dispose(): void {
     this.clearAnswerTimer();
     this.clearDrawingTimer();
+    this.clearAutoNextTimer();
   }
 
   startGame(actorId: string): void {
@@ -103,6 +105,10 @@ export class CasinoGameService {
     const question = round.question as ReversedQuestion | FlagQuestion | TriviaQuestion;
     const correct = matchesAnswer(answer, question.answer, question.alt ?? []);
 
+    if (round.answerRevealed) {
+      return;
+    }
+
     if (correct) {
       this.updateScore(playerId, 1);
       round.answerRevealed = true;
@@ -120,12 +126,13 @@ export class CasinoGameService {
         type: round.type,
       });
       this.checkWinner();
+      this.scheduleAutoNextIfNeeded();
       this.touch();
       return;
     }
 
     this.updateScore(playerId, -1);
-    round.excludedPlayerIds.push(playerId);
+    // Do NOT exclude from buzzing — players can always try again after a wrong answer
     round.buzzedPlayerId = undefined;
 
     this.emit('casino:answer_result', {
@@ -141,17 +148,11 @@ export class CasinoGameService {
   submitDrawing(playerId: string, imageDataUrl: string): void {
     const round = this.requireDrawingRound();
     const drawing = round.drawing;
-    if (!drawing || drawing.phase !== 'drawing') {
+    if (!drawing || (drawing.phase !== 'drawing' && drawing.phase !== 'ready_up')) {
       return;
     }
 
-    const currentDrawer = drawing.drawerOrder[drawing.currentDrawerIndex];
-    if (currentDrawer !== playerId) {
-      return;
-    }
-
-    this.clearDrawingTimer();
-
+    // Simultaneous submission
     const existing = drawing.submissions.find((item) => item.playerId === playerId);
     if (existing) {
       existing.imageDataUrl = imageDataUrl;
@@ -164,30 +165,25 @@ export class CasinoGameService {
       });
     }
 
-    drawing.currentDrawerIndex += 1;
-    if (drawing.currentDrawerIndex < drawing.drawerOrder.length) {
-      const nextDrawerId = drawing.drawerOrder[drawing.currentDrawerIndex];
-      drawing.drawingDeadlineAt = now() + DRAWING_SECONDS * 1000;
-      this.emit('casino:drawing_turn', {
+    this.emit('casino:drawing_submitted', {
+      roomCode: this.options.roomCode,
+      playerId,
+      count: drawing.submissions.length,
+      total: drawing.drawerOrder.length,
+    });
+
+    if (drawing.submissions.length >= drawing.drawerOrder.length) {
+      this.clearDrawingTimer();
+      drawing.phase = 'voting';
+      drawing.currentVoterIndex = 0;
+      drawing.drawingDeadlineAt = undefined;
+      this.emit('casino:voting_start', {
         roomCode: this.options.roomCode,
         roundNumber: round.roundNumber,
-        drawerPlayerId: nextDrawerId,
-        deadlineAt: drawing.drawingDeadlineAt,
+        voterPlayerId: drawing.votingPlayerOrder[drawing.currentVoterIndex],
+        submissions: drawing.submissions,
       });
-      this.scheduleDrawingTimeout();
-      this.touch();
-      return;
     }
-
-    drawing.phase = 'voting';
-    drawing.currentVoterIndex = 0;
-    drawing.drawingDeadlineAt = undefined;
-    this.emit('casino:voting_start', {
-      roomCode: this.options.roomCode,
-      roundNumber: round.roundNumber,
-      voterPlayerId: drawing.votingPlayerOrder[drawing.currentVoterIndex],
-      submissions: drawing.submissions,
-    });
     this.touch();
   }
 
@@ -231,6 +227,32 @@ export class CasinoGameService {
 
     drawing.phase = 'done';
     this.finishDrawingRound(round);
+  }
+
+  voteRepeat(playerId: string): void {
+    const round = this.options.state.currentRound;
+    if (!round || round.type !== 'reversed') {
+      return;
+    }
+    // Prevent duplicate votes
+    if (!round.repeatVoterIds) {
+      round.repeatVoterIds = [];
+    }
+    if (round.repeatVoterIds.includes(playerId)) {
+      return;
+    }
+    round.repeatVoterIds.push(playerId);
+    round.repeatVoteCount = round.repeatVoterIds.length;
+
+    const playersNeeded = Math.ceil(this.playablePlayers().length * 0.5);
+    this.emit('casino:vote_repeat', {
+      roomCode: this.options.roomCode,
+      repeatVoteCount: round.repeatVoteCount,
+      neededForRepeat: playersNeeded,
+      triggered: round.repeatVoteCount >= playersNeeded,
+    });
+
+    this.touch();
   }
 
   hostAction(actorId: string, action: HostAction, payload?: HostActionPayload): void {
@@ -278,10 +300,8 @@ export class CasinoGameService {
       if (!drawing || drawing.phase !== 'drawing') {
         return;
       }
-      const currentDrawer = drawing.drawerOrder[drawing.currentDrawerIndex];
-      if (currentDrawer === playerId) {
-        this.submitDrawing(playerId, '');
-      }
+      // In simultaneous drawing, we don't necessarily need to submit empty for disconnected players
+      // unless we want to force end the round. For now, let the timer handle it.
     }
   }
 
@@ -378,8 +398,9 @@ export class CasinoGameService {
         votingPlayerOrder: players,
         currentVoterIndex: 0,
         votes: [],
-        phase: 'drawing',
-        drawingDeadlineAt: now() + DRAWING_SECONDS * 1000,
+        phase: 'ready_up',
+        readyPlayerIds: [],
+        drawingDeadlineAt: undefined,
       },
     };
 
@@ -391,27 +412,41 @@ export class CasinoGameService {
       type: round.type,
       question: prompt,
     });
-    this.emit('casino:drawing_turn', {
-      roomCode: this.options.roomCode,
-      roundNumber: round.roundNumber,
-      drawerPlayerId: players[0],
-      deadlineAt: round.drawing?.drawingDeadlineAt,
-    });
-    this.scheduleDrawingTimeout();
+    this.touch();
+  }
+
+  drawingReady(playerId: string): void {
+    const round = this.requireDrawingRound();
+    const drawing = round.drawing;
+    if (!drawing || drawing.phase !== 'ready_up') {
+      return;
+    }
+
+    if (!drawing.readyPlayerIds.includes(playerId)) {
+      drawing.readyPlayerIds.push(playerId);
+    }
+
+    const playable = this.playablePlayers();
+    if (drawing.readyPlayerIds.length >= playable.length) {
+      drawing.phase = 'drawing';
+      drawing.drawingDeadlineAt = now() + DRAWING_SECONDS * 1000;
+      this.emit('casino:drawing_start', {
+        roomCode: this.options.roomCode,
+        roundNumber: round.roundNumber,
+        deadlineAt: drawing.drawingDeadlineAt,
+      });
+      this.scheduleDrawingTimeout();
+    }
     this.touch();
   }
 
   private reopenOrReveal(round: CasinoRoundState): void {
-    const eligible = this.getEligibleBuzzers(round);
-    if (eligible.length === 0) {
-      this.forceRevealRound();
-      return;
-    }
-
+    // Always reopen — answer reveal only happens via host skip or player give-up vote
     round.buzzedPlayerId = undefined;
     round.answerDeadlineAt = undefined;
     round.buzzerWindowId = createId('buzz');
 
+    const eligible = this.getEligibleBuzzers(round);
     this.emit('casino:buzzer_open', {
       roomCode: this.options.roomCode,
       roundNumber: round.roundNumber,
@@ -422,6 +457,37 @@ export class CasinoGameService {
     this.touch();
   }
 
+  giveUp(playerId: string): void {
+    const round = this.options.state.currentRound;
+    if (!round || round.type === 'drawing' || round.answerRevealed) {
+      return;
+    }
+    if (!round.giveUpVoterIds) {
+      round.giveUpVoterIds = [];
+    }
+    if (round.giveUpVoterIds.includes(playerId)) {
+      return;
+    }
+    round.giveUpVoterIds.push(playerId);
+    round.giveUpCount = round.giveUpVoterIds.length;
+
+    const playersNeeded = Math.ceil(this.playablePlayers().length * 0.5);
+    const triggered = round.giveUpCount >= playersNeeded;
+
+    this.emit('casino:give_up_vote', {
+      roomCode: this.options.roomCode,
+      giveUpCount: round.giveUpCount,
+      neededToReveal: playersNeeded,
+      triggered,
+    });
+
+    if (triggered) {
+      this.forceRevealRound();
+    } else {
+      this.touch();
+    }
+  }
+
   private handleBuzzTimeout(): void {
     const round = this.requireTimedRound();
     if (!round.buzzedPlayerId) {
@@ -430,6 +496,7 @@ export class CasinoGameService {
 
     const timedOutId = round.buzzedPlayerId;
     this.updateScore(timedOutId, -1);
+    // Add to excluded only on timeout (not wrong answer), so they sit out this window
     round.excludedPlayerIds.push(timedOutId);
     round.buzzedPlayerId = undefined;
     round.answerDeadlineAt = undefined;
@@ -463,6 +530,7 @@ export class CasinoGameService {
       type: round.type,
       revealedAnswer: question.answer,
     });
+    this.scheduleAutoNextIfNeeded();
     this.touch();
   }
 
@@ -508,6 +576,7 @@ export class CasinoGameService {
     });
 
     this.checkWinner();
+    this.scheduleAutoNextIfNeeded();
     this.touch();
   }
 
@@ -606,11 +675,20 @@ export class CasinoGameService {
       if (!round || round.type !== 'drawing' || !round.drawing) {
         return;
       }
-      const currentDrawer = round.drawing.drawerOrder[round.drawing.currentDrawerIndex];
-      if (!currentDrawer) {
-        return;
+
+      // Auto-submit/End drawing phase
+      if (round.drawing.phase === 'drawing') {
+        round.drawing.phase = 'voting';
+        round.drawing.currentVoterIndex = 0;
+        round.drawing.drawingDeadlineAt = undefined;
+        this.emit('casino:voting_start', {
+          roomCode: this.options.roomCode,
+          roundNumber: round.roundNumber,
+          voterPlayerId: round.drawing.votingPlayerOrder[round.drawing.currentVoterIndex],
+          submissions: round.drawing.submissions,
+        });
+        this.touch();
       }
-      this.submitDrawing(currentDrawer, '');
     }, DRAWING_SECONDS * 1000);
   }
 
@@ -626,6 +704,27 @@ export class CasinoGameService {
       clearTimeout(this.drawingTimer);
       this.drawingTimer = undefined;
     }
+  }
+
+  private clearAutoNextTimer(): void {
+    if (this.autoNextTimer) {
+      clearTimeout(this.autoNextTimer);
+      this.autoNextTimer = undefined;
+    }
+  }
+
+  private scheduleAutoNextIfNeeded(): void {
+    this.clearAutoNextTimer();
+    if (this.options.state.hostMode !== 'ai' || this.options.state.meta.status !== 'in_game') {
+      return;
+    }
+
+    // Auto-advance after 7 seconds (gives time for the 5s UI countdown)
+    this.autoNextTimer = setTimeout(() => {
+      if (this.options.state.meta.status === 'in_game') {
+        this.startNextRound();
+      }
+    }, 7000);
   }
 
   private getEligibleBuzzers(round: CasinoRoundState): string[] {

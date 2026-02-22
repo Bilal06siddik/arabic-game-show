@@ -39,7 +39,7 @@ export class RoomManager {
   private readonly bankRooms = new Map<string, BankRoomContext>();
   private readonly services = new Map<string, RoomServiceHook>();
 
-  constructor(private readonly reconnectExpiryMs = 24 * 60 * 60 * 1000) {}
+  constructor(private readonly reconnectExpiryMs = 24 * 60 * 60 * 1000) { }
 
   registerService(roomCode: string, service: RoomServiceHook): void {
     this.services.set(roomCode, service);
@@ -53,13 +53,17 @@ export class RoomManager {
 
   createCasinoRoom(input: CreateCasinoRoomInput): CreateRoomResult {
     const roomCode = this.generateUniqueRoomCode();
-    const hostPlayer = this.buildHostPlayer(input.hostName, input.language, input.hostCanPlay);
+    const hostCanPlay = input.hostMode === 'player';
+    const hostName = input.hostMode === 'ai' ? 'AI HOST' : input.hostName;
+
+    const hostPlayer = this.buildHostPlayer(hostName, input.language, hostCanPlay);
     const timestamp = now();
 
     const state: CasinoRoomState = {
       gameType: 'casino',
       paused: false,
       targetScore: input.targetScore,
+      hostMode: input.hostMode,
       players: [hostPlayer],
       roundQueue: [],
       usedQuestionIds: {
@@ -91,7 +95,7 @@ export class RoomManager {
 
   createBankRoom(input: CreateBankRoomInput, board: BankRoomState['board']): CreateRoomResult {
     const roomCode = this.generateUniqueRoomCode();
-    const hostPlayer = this.buildHostPlayer(input.hostName, input.language, input.hostCanPlay);
+    const hostPlayer = this.buildHostPlayer(input.hostName, input.language, input.hostMode === 'player');
     const timestamp = now();
 
     const state: BankRoomState = {

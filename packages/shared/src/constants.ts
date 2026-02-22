@@ -8,7 +8,7 @@ export const ROOM_LIMITS = {
   bank: 6,
 } as const;
 
-export const ANSWER_SECONDS = 5;
+export const ANSWER_SECONDS = 7;
 export const DRAWING_SECONDS = 30;
 export const TURN_SECONDS_DEFAULT = 45;
 

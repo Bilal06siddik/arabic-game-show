@@ -40,10 +40,13 @@ export function matchesAnswer(
 
   const normalizedInput = normalizeArabic(input);
   const normalizedAnswer = normalizeArabic(answer);
+
+  // 1. Exact match
   if (normalizedInput === normalizedAnswer) {
     return true;
   }
 
+  // 2. Substring match — input contains answer or answer contains input
   if (
     normalizedAnswer.includes(normalizedInput) ||
     normalizedInput.includes(normalizedAnswer)
@@ -51,6 +54,20 @@ export function matchesAnswer(
     return true;
   }
 
+  // 3. Word-level match — any significant word (3+ chars) in the correct answer matches the input
+  //    e.g. typing "سعودية" matches "المملكة العربية السعودية"
+  const answerWords = normalizedAnswer.split(' ').filter((w) => w.length >= 3);
+  for (const word of answerWords) {
+    if (
+      normalizedInput === word ||
+      word.includes(normalizedInput) ||
+      normalizedInput.includes(word)
+    ) {
+      return true;
+    }
+  }
+
+  // 4. Check alternatives (including English country names)
   for (const alternative of alternatives) {
     const normalizedAlt = normalizeArabic(alternative);
     if (
@@ -60,12 +77,33 @@ export function matchesAnswer(
     ) {
       return true;
     }
+    // Word-level within the alternative
+    const altWords = normalizedAlt.split(' ').filter((w) => w.length >= 3);
+    for (const word of altWords) {
+      if (
+        normalizedInput === word ||
+        word.includes(normalizedInput) ||
+        normalizedInput.includes(word)
+      ) {
+        return true;
+      }
+    }
   }
 
-  if (normalizedAnswer.length > 3) {
+  // 5. Fuzzy (Levenshtein) fallback — whole answer
+  if (normalizedAnswer.length > 4) {
     const threshold = Math.max(1, Math.floor(normalizedAnswer.length * 0.25));
     if (levenshtein(normalizedInput, normalizedAnswer) <= threshold) {
       return true;
+    }
+  }
+  // Also fuzzy each word in the answer
+  for (const word of answerWords) {
+    if (word.length > 4) {
+      const wordThreshold = Math.max(1, Math.floor(word.length * 0.25));
+      if (levenshtein(normalizedInput, word) <= wordThreshold) {
+        return true;
+      }
     }
   }
 

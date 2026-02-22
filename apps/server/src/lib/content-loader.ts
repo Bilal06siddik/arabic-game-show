@@ -35,6 +35,7 @@ function readJson<T>(filePath: string): T {
   return JSON.parse(raw) as T;
 }
 
+// Content is loaded fresh on each call so JSON edits take effect on server restart
 export function loadCasinoContent(): CasinoContent {
   const contentDir = resolveContentDir();
   const casinoDir = path.join(contentDir, 'casino');

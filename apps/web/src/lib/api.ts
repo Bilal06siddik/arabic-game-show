@@ -45,7 +45,7 @@ async function request<T>(path: string, init?: RequestInit): Promise<T> {
 export function createCasinoRoom(payload: {
   hostName: string;
   language: Language;
-  hostCanPlay: boolean;
+  hostMode: 'player' | 'moderator' | 'ai';
   targetScore: number;
 }): Promise<CreateRoomResponse> {
   return request<CreateRoomResponse>('/api/casino/rooms/create', {
@@ -57,7 +57,7 @@ export function createCasinoRoom(payload: {
 export function createBankRoom(payload: {
   hostName: string;
   language: Language;
-  hostCanPlay: boolean;
+  hostMode: 'player' | 'moderator' | 'ai';
   rulePreset: 'official' | 'house';
 }): Promise<CreateRoomResponse> {
   return request<CreateRoomResponse>('/api/bank/rooms/create', {

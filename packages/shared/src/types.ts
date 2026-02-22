@@ -110,8 +110,9 @@ export interface CasinoDrawingRoundState {
   votingPlayerOrder: string[];
   currentVoterIndex: number;
   votes: DrawingVote[];
-  phase: 'drawing' | 'voting' | 'done';
+  phase: 'ready_up' | 'drawing' | 'voting' | 'done';
   drawingDeadlineAt?: number;
+  readyPlayerIds: string[];
 }
 
 export interface CasinoRoundState {
@@ -126,11 +127,20 @@ export interface CasinoRoundState {
   excludedPlayerIds: string[];
   answerDeadlineAt?: number;
   drawing?: CasinoDrawingRoundState;
+  /** How many players have voted to repeat the reversed-words sequence */
+  repeatVoteCount?: number;
+  /** Player IDs that have voted to repeat (prevents double votes) */
+  repeatVoterIds?: string[];
+  /** How many players have voted to give up and reveal the answer */
+  giveUpCount?: number;
+  /** Player IDs that have voted to give up */
+  giveUpVoterIds?: string[];
 }
 
 export interface CasinoRoomState extends RoomStateBase {
   gameType: 'casino';
   targetScore: number;
+  hostMode: 'player' | 'moderator' | 'ai';
   currentRound?: CasinoRoundState;
   roundQueue: CasinoRoundType[];
   usedQuestionIds: Record<'reversed' | 'flag' | 'trivia' | 'drawing', string[]>;
@@ -264,12 +274,12 @@ export interface BankTurnState {
 
 export interface BankPendingAction {
   type:
-    | 'roll'
-    | 'buy_or_auction'
-    | 'auction'
-    | 'resolve_rent'
-    | 'jail_choice'
-    | 'end_turn';
+  | 'roll'
+  | 'buy_or_auction'
+  | 'auction'
+  | 'resolve_rent'
+  | 'jail_choice'
+  | 'end_turn';
   tileId?: number;
 }
 

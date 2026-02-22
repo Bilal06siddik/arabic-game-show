@@ -454,6 +454,30 @@ export function createAppRuntime(): AppRuntime {
       }
     });
 
+    socket.on('casino:vote_repeat', () => {
+      try {
+        service.voteRepeat(playerId);
+      } catch (error) {
+        emitRoomError(socket, error);
+      }
+    });
+
+    socket.on('casino:give_up', () => {
+      try {
+        service.giveUp(playerId);
+      } catch (error) {
+        emitRoomError(socket, error);
+      }
+    });
+
+    socket.on('casino:drawing_ready', () => {
+      try {
+        service.drawingReady(playerId);
+      } catch (error) {
+        emitRoomError(socket, error);
+      }
+    });
+
     socket.on('disconnect', () => {
       const result = roomManager.markDisconnected('casino', roomCode, playerId);
       if (result.newHostId) {
