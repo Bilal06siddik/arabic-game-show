@@ -55,8 +55,9 @@ export class RoomManager {
 
   createCasinoRoom(input: CreateCasinoRoomInput): CreateRoomResult {
     const roomCode = this.generateUniqueRoomCode();
-    const hostCanPlay = input.hostMode === 'player';
-    const hostName = input.hostMode === 'ai' ? 'AI HOST' : input.hostName;
+    const hostMode = this.resolveHostMode(input);
+    const hostCanPlay = hostMode === 'player';
+    const hostName = hostMode === 'ai' ? 'AI HOST' : input.hostName;
 
     const hostPlayer = this.buildHostPlayer(hostName, input.language, hostCanPlay);
     const timestamp = now();
@@ -65,7 +66,7 @@ export class RoomManager {
       gameType: 'casino',
       paused: false,
       targetScore: input.targetScore,
-      hostMode: input.hostMode,
+      hostMode,
       players: [hostPlayer],
       roundQueue: [],
       usedQuestionIds: {
@@ -97,7 +98,8 @@ export class RoomManager {
 
   createBankRoom(input: CreateBankRoomInput, board: BankRoomState['board']): CreateRoomResult {
     const roomCode = this.generateUniqueRoomCode();
-    const hostCanPlay = input.hostMode === 'player';
+    const hostMode = this.resolveHostMode(input);
+    const hostCanPlay = hostMode === 'player';
     const hostPieceColor = hostCanPlay
       ? this.resolvePieceColor([], input.pieceColor)
       : undefined;
@@ -517,5 +519,20 @@ export class RoomManager {
       joinedAt: now(),
       lastSeenAt: now(),
     };
+  }
+
+  private resolveHostMode(
+    input: {
+      hostMode: 'player' | 'moderator' | 'ai';
+    } | {
+      hostCanPlay?: boolean;
+      hostMode?: 'player' | 'moderator' | 'ai';
+    },
+  ): 'player' | 'moderator' | 'ai' {
+    if (input.hostMode) {
+      return input.hostMode;
+    }
+
+    return input.hostCanPlay === false ? 'moderator' : 'player';
   }
 }
